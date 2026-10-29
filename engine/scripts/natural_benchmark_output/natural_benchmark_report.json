@@ -1,0 +1,209 @@
+{
+  "timestamp": "2026-10-28T17:47:20Z",
+  "dataset_manifest_summary": {
+    "total_natural_images": 2,
+    "images": [
+      {
+        "id": "natural_01_mountain_terrain",
+        "source": "VeilGuard Natural Terrain Reference (CC0 1.0 Universal)",
+        "license": "CC0 1.0 Universal / Public Domain",
+        "target_resolution": [
+          256,
+          256
+        ]
+      },
+      {
+        "id": "natural_02_botanical_canopy",
+        "source": "VeilGuard Botanical Canopy Reference (CC0 1.0 Universal)",
+        "license": "CC0 1.0 Universal / Public Domain",
+        "target_resolution": [
+          256,
+          256
+        ]
+      }
+    ]
+  },
+  "models_evaluated": {
+    "representation_model": "ResNet-18 (PyTorch Torchvision, BSD-3-Clause)",
+    "diffusion_model": "google/ddpm-cifar10-32 (UNet2D, Apache-2.0, SDEdit DDIM 20-step)"
+  },
+  "natural_image_evaluations": [
+    {
+      "image_id": "natural_01_mountain_terrain",
+      "source": "VeilGuard Natural Terrain Reference (CC0 1.0 Universal)",
+      "license": "CC0 1.0 Universal / Public Domain",
+      "quality": {
+        "psnr_db": 32.53,
+        "ssim": 0.9785,
+        "max_diff_uint8": 8,
+        "input_mse_255": 36.332,
+        "linf_compliant": true
+      },
+      "resnet18_classification": {
+        "clean_prediction": {
+          "id": 885,
+          "name": "velvet",
+          "conf": 0.0814
+        },
+        "protected_prediction": {
+          "id": 794,
+          "name": "shower curtain",
+          "conf": 0.873
+        },
+        "semantic_class_flipped": true
+      },
+      "diffusion_sdedit_runs": [
+        {
+          "noise_strength": 0.25,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.112,
+          "trajectory_ssim": 0.9999,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.25,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.131,
+          "trajectory_ssim": 0.9999,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.081,
+          "trajectory_ssim": 1.0,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.121,
+          "trajectory_ssim": 0.9999,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.035,
+          "trajectory_ssim": 1.0,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.055,
+          "trajectory_ssim": 1.0,
+          "edit_diverged": false
+        }
+      ]
+    },
+    {
+      "image_id": "natural_02_botanical_canopy",
+      "source": "VeilGuard Botanical Canopy Reference (CC0 1.0 Universal)",
+      "license": "CC0 1.0 Universal / Public Domain",
+      "quality": {
+        "psnr_db": 31.81,
+        "ssim": 0.9639,
+        "max_diff_uint8": 8,
+        "input_mse_255": 42.853,
+        "linf_compliant": true
+      },
+      "resnet18_classification": {
+        "clean_prediction": {
+          "id": 904,
+          "name": "window screen",
+          "conf": 0.1897
+        },
+        "protected_prediction": {
+          "id": 904,
+          "name": "window screen",
+          "conf": 0.3636
+        },
+        "semantic_class_flipped": false
+      },
+      "diffusion_sdedit_runs": [
+        {
+          "noise_strength": 0.25,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.294,
+          "trajectory_ssim": 0.9992,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.25,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.1,
+          "trajectory_ssim": 0.9996,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.113,
+          "trajectory_ssim": 0.9999,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.102,
+          "trajectory_ssim": 0.9999,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.067,
+          "trajectory_ssim": 1.0,
+          "edit_diverged": false
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.065,
+          "trajectory_ssim": 1.0,
+          "edit_diverged": false
+        }
+      ]
+    }
+  ],
+  "controlled_transformation_evaluations": [
+    {
+      "image_id": "natural_01_mountain_terrain",
+      "transformation": "jpeg_q75",
+      "noise_strength": 0.5,
+      "seed": 42,
+      "baseline_drift_mse": 0.081,
+      "transformed_paired_drift_mse": 0.422,
+      "transformed_paired_ssim": 0.9999,
+      "protection_survives": false
+    },
+    {
+      "image_id": "natural_01_mountain_terrain",
+      "transformation": "gaussian_blur_r1",
+      "noise_strength": 0.5,
+      "seed": 42,
+      "baseline_drift_mse": 0.081,
+      "transformed_paired_drift_mse": 0.141,
+      "transformed_paired_ssim": 1.0,
+      "protection_survives": false
+    },
+    {
+      "image_id": "natural_01_mountain_terrain",
+      "transformation": "downsample_75pct",
+      "noise_strength": 0.5,
+      "seed": 42,
+      "baseline_drift_mse": 0.081,
+      "transformed_paired_drift_mse": 0.127,
+      "transformed_paired_ssim": 1.0,
+      "protection_survives": false
+    }
+  ],
+  "aggregate_summary": {
+    "natural_images_tested": 2,
+    "classification_flip_rate_pct": 50.0,
+    "mean_diffusion_drift_mse_255": 0.106,
+    "mean_diffusion_ssim": 0.9999,
+    "all_lossless_linf_compliant": true
+  }
+}

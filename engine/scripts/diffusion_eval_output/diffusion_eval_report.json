@@ -1,0 +1,453 @@
+{
+  "timestamp": "2026-10-28T17:36:19Z",
+  "target_model_specification": {
+    "model_id": "google/ddpm-cifar10-32",
+    "architecture": "UNet2DModel (35.7M parameters)",
+    "training_domain": "CIFAR-10 unconditional (32x32 RGB)",
+    "license": "Apache-2.0 (Permissive open source)",
+    "license_commercial_use": true,
+    "editing_pipeline": "SDEdit (Stochastic Differential Editing, Meng et al. ICLR 2022)",
+    "sampler": "DDIMScheduler (Song et al. ICLR 2021), 20 deterministic inference steps",
+    "device": "cpu",
+    "scope_clarification": "google/ddpm-cifar10-32 is an unconditional 32x32 diffusion model evaluated through SDEdit. It is NOT a representative commercial photo editor, does NOT accept text prompts, and does NOT perform semantic inpainting. It evaluates whether bounded adversarial perturbations survive multi-step diffusion reverse trajectories on CPU."
+  },
+  "system_environment": {
+    "platform": "win32",
+    "cpu_count": 12,
+    "ram_total_gb": 7.4
+  },
+  "measurement_definitions": {
+    "tensor_range": "Normalized float in [-1.0, 1.0] for UNet, [0, 1] for quality metrics",
+    "pixel_scale_mse": "Mean Squared Error on [0, 255] uint8 intensity: MSE_255 in [0, 65025]",
+    "normalized_mse": "Normalized MSE in [0, 1]: MSE_norm = MSE_255 / (255^2)",
+    "ssim_dynamic_range": "Wang et al. formulation with L=255, c1=(0.01*255)^2, c2=(0.03*255)^2",
+    "perturbation_amplification_ratio": "DTD_MSE / Input_MSE (values >1.0 indicate amplification, <1.0 indicate attenuation)",
+    "divergence_threshold": "DTD_MSE > 5.0, corresponding to an RMS pixel difference > 2.24 intensity levels"
+  },
+  "baseline_variability": {
+    "matched_seed_variability_mse": 0.0,
+    "inter_seed_generative_variance": {
+      "strength_25pct": {
+        "inter_seed_mse_255": 727.775,
+        "inter_seed_ssim": 0.882,
+        "interpretation": "Intrinsic variance of the diffusion model between two random seeds at strength 0.25"
+      },
+      "strength_50pct": {
+        "inter_seed_mse_255": 1299.038,
+        "inter_seed_ssim": 0.1995,
+        "interpretation": "Intrinsic variance of the diffusion model between two random seeds at strength 0.5"
+      },
+      "strength_75pct": {
+        "inter_seed_mse_255": 5800.791,
+        "inter_seed_ssim": 0.1396,
+        "interpretation": "Intrinsic variance of the diffusion model between two random seeds at strength 0.75"
+      }
+    }
+  },
+  "evaluation_cases": [
+    {
+      "case_id": "case_1_coil",
+      "description": "High-contrast geometric rings",
+      "pre_edit_quality": {
+        "psnr_db": 31.25,
+        "ssim": 0.9925,
+        "max_diff_uint8": 8,
+        "input_mse_255": 48.746,
+        "linf_compliant": true,
+        "perturbation_duration_s": 0.348
+      },
+      "diffusion_runs": [
+        {
+          "noise_strength": 0.25,
+          "seed": 42,
+          "trajectory_drift_mse_255": 2.058,
+          "trajectory_drift_mse_norm": 3.2e-05,
+          "trajectory_psnr_db": 45.0,
+          "trajectory_ssim": 0.9996,
+          "perturbation_amplification_ratio": 0.042,
+          "edit_diverged": false,
+          "inference_duration_s": 1.175
+        },
+        {
+          "noise_strength": 0.25,
+          "seed": 101,
+          "trajectory_drift_mse_255": 2.013,
+          "trajectory_drift_mse_norm": 3.1e-05,
+          "trajectory_psnr_db": 45.09,
+          "trajectory_ssim": 0.9996,
+          "perturbation_amplification_ratio": 0.041,
+          "edit_diverged": false,
+          "inference_duration_s": 1.219
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 42,
+          "trajectory_drift_mse_255": 26.797,
+          "trajectory_drift_mse_norm": 0.000412,
+          "trajectory_psnr_db": 33.85,
+          "trajectory_ssim": 0.9841,
+          "perturbation_amplification_ratio": 0.55,
+          "edit_diverged": true,
+          "inference_duration_s": 1.938
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.909,
+          "trajectory_drift_mse_norm": 1.4e-05,
+          "trajectory_psnr_db": 48.54,
+          "trajectory_ssim": 0.9993,
+          "perturbation_amplification_ratio": 0.019,
+          "edit_diverged": false,
+          "inference_duration_s": 2.036
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.275,
+          "trajectory_drift_mse_norm": 4e-06,
+          "trajectory_psnr_db": 53.74,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.006,
+          "edit_diverged": false,
+          "inference_duration_s": 3.04
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.314,
+          "trajectory_drift_mse_norm": 5e-06,
+          "trajectory_psnr_db": 53.16,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.006,
+          "edit_diverged": false,
+          "inference_duration_s": 2.937
+        }
+      ]
+    },
+    {
+      "case_id": "case_2_slats",
+      "description": "Periodic horizontal slats",
+      "pre_edit_quality": {
+        "psnr_db": 31.15,
+        "ssim": 0.9977,
+        "max_diff_uint8": 8,
+        "input_mse_255": 49.888,
+        "linf_compliant": true,
+        "perturbation_duration_s": 0.225
+      },
+      "diffusion_runs": [
+        {
+          "noise_strength": 0.25,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.992,
+          "trajectory_drift_mse_norm": 1.5e-05,
+          "trajectory_psnr_db": 48.17,
+          "trajectory_ssim": 1.0,
+          "perturbation_amplification_ratio": 0.02,
+          "edit_diverged": false,
+          "inference_duration_s": 1.177
+        },
+        {
+          "noise_strength": 0.25,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.757,
+          "trajectory_drift_mse_norm": 1.2e-05,
+          "trajectory_psnr_db": 49.34,
+          "trajectory_ssim": 1.0,
+          "perturbation_amplification_ratio": 0.015,
+          "edit_diverged": false,
+          "inference_duration_s": 1.223
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 42,
+          "trajectory_drift_mse_255": 2.029,
+          "trajectory_drift_mse_norm": 3.1e-05,
+          "trajectory_psnr_db": 45.06,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.041,
+          "edit_diverged": false,
+          "inference_duration_s": 1.984
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.919,
+          "trajectory_drift_mse_norm": 1.4e-05,
+          "trajectory_psnr_db": 48.5,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.018,
+          "edit_diverged": false,
+          "inference_duration_s": 2.291
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.226,
+          "trajectory_drift_mse_norm": 3e-06,
+          "trajectory_psnr_db": 54.59,
+          "trajectory_ssim": 1.0,
+          "perturbation_amplification_ratio": 0.005,
+          "edit_diverged": false,
+          "inference_duration_s": 3.375
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.419,
+          "trajectory_drift_mse_norm": 6e-06,
+          "trajectory_psnr_db": 51.91,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.008,
+          "edit_diverged": false,
+          "inference_duration_s": 3.038
+        }
+      ]
+    },
+    {
+      "case_id": "case_3_harmonic",
+      "description": "Multi-channel harmonic wave lattice",
+      "pre_edit_quality": {
+        "psnr_db": 31.87,
+        "ssim": 0.9958,
+        "max_diff_uint8": 8,
+        "input_mse_255": 42.291,
+        "linf_compliant": true,
+        "perturbation_duration_s": 0.266
+      },
+      "diffusion_runs": [
+        {
+          "noise_strength": 0.25,
+          "seed": 42,
+          "trajectory_drift_mse_255": 2.239,
+          "trajectory_drift_mse_norm": 3.4e-05,
+          "trajectory_psnr_db": 44.63,
+          "trajectory_ssim": 0.9998,
+          "perturbation_amplification_ratio": 0.053,
+          "edit_diverged": false,
+          "inference_duration_s": 1.186
+        },
+        {
+          "noise_strength": 0.25,
+          "seed": 101,
+          "trajectory_drift_mse_255": 1.716,
+          "trajectory_drift_mse_norm": 2.6e-05,
+          "trajectory_psnr_db": 45.79,
+          "trajectory_ssim": 0.9998,
+          "perturbation_amplification_ratio": 0.041,
+          "edit_diverged": false,
+          "inference_duration_s": 1.22
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 42,
+          "trajectory_drift_mse_255": 1.537,
+          "trajectory_drift_mse_norm": 2.4e-05,
+          "trajectory_psnr_db": 46.26,
+          "trajectory_ssim": 0.9998,
+          "perturbation_amplification_ratio": 0.036,
+          "edit_diverged": false,
+          "inference_duration_s": 2.025
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 101,
+          "trajectory_drift_mse_255": 2.619,
+          "trajectory_drift_mse_norm": 4e-05,
+          "trajectory_psnr_db": 43.95,
+          "trajectory_ssim": 0.9997,
+          "perturbation_amplification_ratio": 0.062,
+          "edit_diverged": false,
+          "inference_duration_s": 2.021
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.512,
+          "trajectory_drift_mse_norm": 8e-06,
+          "trajectory_psnr_db": 51.04,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.012,
+          "edit_diverged": false,
+          "inference_duration_s": 3.114
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.194,
+          "trajectory_drift_mse_norm": 3e-06,
+          "trajectory_psnr_db": 55.25,
+          "trajectory_ssim": 1.0,
+          "perturbation_amplification_ratio": 0.005,
+          "edit_diverged": false,
+          "inference_duration_s": 3.089
+        }
+      ]
+    },
+    {
+      "case_id": "case_4_checkerboard",
+      "description": "High-frequency checkerboard matrix",
+      "pre_edit_quality": {
+        "psnr_db": 31.31,
+        "ssim": 0.9976,
+        "max_diff_uint8": 8,
+        "input_mse_255": 48.075,
+        "linf_compliant": true,
+        "perturbation_duration_s": 0.253
+      },
+      "diffusion_runs": [
+        {
+          "noise_strength": 0.25,
+          "seed": 42,
+          "trajectory_drift_mse_255": 2.381,
+          "trajectory_drift_mse_norm": 3.7e-05,
+          "trajectory_psnr_db": 44.36,
+          "trajectory_ssim": 0.9998,
+          "perturbation_amplification_ratio": 0.05,
+          "edit_diverged": false,
+          "inference_duration_s": 1.245
+        },
+        {
+          "noise_strength": 0.25,
+          "seed": 101,
+          "trajectory_drift_mse_255": 2.237,
+          "trajectory_drift_mse_norm": 3.4e-05,
+          "trajectory_psnr_db": 44.63,
+          "trajectory_ssim": 0.9998,
+          "perturbation_amplification_ratio": 0.047,
+          "edit_diverged": false,
+          "inference_duration_s": 1.312
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 42,
+          "trajectory_drift_mse_255": 1.127,
+          "trajectory_drift_mse_norm": 1.7e-05,
+          "trajectory_psnr_db": 47.61,
+          "trajectory_ssim": 0.9997,
+          "perturbation_amplification_ratio": 0.023,
+          "edit_diverged": false,
+          "inference_duration_s": 2.171
+        },
+        {
+          "noise_strength": 0.5,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.97,
+          "trajectory_drift_mse_norm": 1.5e-05,
+          "trajectory_psnr_db": 48.26,
+          "trajectory_ssim": 0.9996,
+          "perturbation_amplification_ratio": 0.02,
+          "edit_diverged": false,
+          "inference_duration_s": 2.029
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 42,
+          "trajectory_drift_mse_255": 0.448,
+          "trajectory_drift_mse_norm": 7e-06,
+          "trajectory_psnr_db": 51.62,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.009,
+          "edit_diverged": false,
+          "inference_duration_s": 3.013
+        },
+        {
+          "noise_strength": 0.75,
+          "seed": 101,
+          "trajectory_drift_mse_255": 0.314,
+          "trajectory_drift_mse_norm": 5e-06,
+          "trajectory_psnr_db": 53.16,
+          "trajectory_ssim": 0.9999,
+          "perturbation_amplification_ratio": 0.007,
+          "edit_diverged": false,
+          "inference_duration_s": 3.011
+        }
+      ]
+    }
+  ],
+  "controlled_transformation_experiments": [
+    {
+      "case_id": "case_1_coil",
+      "transformation": "jpeg_q75",
+      "noise_strength": 0.5,
+      "seed": 42,
+      "pre_diffusion": {
+        "transformed_input_mse_255": 183.482,
+        "transformed_input_ssim": 0.9528
+      },
+      "untransformed_baseline": {
+        "baseline_output_drift_mse": 26.797,
+        "baseline_output_ssim": 0.9841
+      },
+      "paired_transformed_diffusion_outcome": {
+        "output_drift_mse_255": 55.632,
+        "output_ssim": 0.97,
+        "trajectory_drift_retention_pct": 207.6,
+        "protection_effect_survives": true
+      }
+    },
+    {
+      "case_id": "case_1_coil",
+      "transformation": "gaussian_blur_r1",
+      "noise_strength": 0.5,
+      "seed": 42,
+      "pre_diffusion": {
+        "transformed_input_mse_255": 6.067,
+        "transformed_input_ssim": 0.9968
+      },
+      "untransformed_baseline": {
+        "baseline_output_drift_mse": 26.797,
+        "baseline_output_ssim": 0.9841
+      },
+      "paired_transformed_diffusion_outcome": {
+        "output_drift_mse_255": 0.748,
+        "output_ssim": 0.9995,
+        "trajectory_drift_retention_pct": 2.8,
+        "protection_effect_survives": false
+      }
+    },
+    {
+      "case_id": "case_1_coil",
+      "transformation": "downsample_75pct",
+      "noise_strength": 0.5,
+      "seed": 42,
+      "pre_diffusion": {
+        "transformed_input_mse_255": 9.417,
+        "transformed_input_ssim": 0.9966
+      },
+      "untransformed_baseline": {
+        "baseline_output_drift_mse": 26.797,
+        "baseline_output_ssim": 0.9841
+      },
+      "paired_transformed_diffusion_outcome": {
+        "output_drift_mse_255": 0.866,
+        "output_ssim": 0.9994,
+        "trajectory_drift_retention_pct": 3.2,
+        "protection_effect_survives": false
+      }
+    }
+  ],
+  "aggregate_metrics": {
+    "sample_size_classification": "Exploratory sample (4 distinct geometric patterns, 24 diffusion runs). A larger scale study is required for broad statistical claims.",
+    "total_diffusion_runs": 24,
+    "mean_trajectory_drift_mse_255": 2.25,
+    "std_trajectory_drift_mse_255": 5.177,
+    "mean_trajectory_ssim": 0.9992,
+    "mean_perturbation_amplification_ratio": 0.047,
+    "strength_breakdown": {
+      "strength_25pct": {
+        "mean_drift_mse_255": 1.799,
+        "mean_ssim": 0.9998
+      },
+      "strength_50pct": {
+        "mean_drift_mse_255": 4.613,
+        "mean_ssim": 0.9978
+      },
+      "strength_75pct": {
+        "mean_drift_mse_255": 0.338,
+        "mean_ssim": 0.9999
+      }
+    }
+  }
+}

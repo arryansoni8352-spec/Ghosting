@@ -1,0 +1,20 @@
+# VeilGuard Engine — Pinned Runtime Dependencies
+# Verified Environment: Python 3.11.9 (Windows x64)
+# Note: Python 3.12 has not been verified locally and is not certified for this beta.
+--extra-index-url https://download.pytorch.org/whl/cpu
+-c constraints.txt
+
+# Core Image & Array Processing
+pillow==13.0.0
+numpy==2.4.6
+psutil==7.2.2
+
+# Neural Feature Disruption (CPU-only PyTorch)
+# PyTorch CPU Index: https://download.pytorch.org/whl/cpu
+torch==2.15.0+cpu
+torchvision==0.29.2+cpu
+
+# Optional Research Pipeline (PhotoGuard AutoencoderKL Latent Attack)
+# Only required if VEILGUARD_SD_VAE_PATH is configured locally
+diffusers==0.42.1
+safetensors==0.8.0

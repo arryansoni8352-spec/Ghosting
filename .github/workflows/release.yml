@@ -1,0 +1,78 @@
+name: Multi-Platform Release Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-package:
+    name: Build & Package (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            artifact_pattern: apps/desktop/release/*.exe
+            build_flags: --win
+          - os: macos-latest
+            artifact_pattern: apps/desktop/release/*.dmg
+            build_flags: --mac
+          - os: ubuntu-latest
+            artifact_pattern: apps/desktop/release/*.AppImage
+            build_flags: --linux
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python Engine Dependencies
+        run: |
+          cd engine
+          python -m pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+          pytest tests/ -v
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Monorepo & Desktop Dependencies
+        run: |
+          npm ci || npm install
+          cd packages/engine-interface
+          npm run build
+          cd ../../apps/desktop
+          npm ci || npm install
+          npm run typecheck
+          npm test
+          npm run build
+
+      - name: Package Desktop Artifacts
+        run: |
+          cd apps/desktop
+          npx electron-builder ${{ matrix.build_flags }} --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: veilguard-${{ matrix.os }}
+          path: ${{ matrix.artifact_pattern }}
+          if-no-files-found: warn

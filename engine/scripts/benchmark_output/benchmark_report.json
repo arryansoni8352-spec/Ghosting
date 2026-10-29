@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-10-28T17:10:39Z",
+  "hardware": {
+    "device": "cpu",
+    "python_version": "3.11.9",
+    "pytorch_version": "2.15.0+cpu",
+    "cuda_available": false
+  },
+  "perceptual_quality": {
+    "256x256": {
+      "psnr_db": 32.79,
+      "ssim": 0.9964,
+      "max_pixel_perturbation": 8.0,
+      "mean_pixel_perturbation": 5.15,
+      "perturbed_pixels_pct": 94.58
+    },
+    "512x512": {
+      "psnr_db": 32.85,
+      "ssim": 0.9964,
+      "max_pixel_perturbation": 8.0,
+      "mean_pixel_perturbation": 5.1,
+      "perturbed_pixels_pct": 94.54
+    }
+  },
+  "transformation_robustness": {
+    "jpeg_q90": {
+      "remaining_mean_perturbation": 4.01,
+      "perturbation_retention_pct": 77.9,
+      "ssim_to_original": 0.9974
+    },
+    "jpeg_q75": {
+      "remaining_mean_perturbation": 3.08,
+      "perturbation_retention_pct": 59.9,
+      "ssim_to_original": 0.9983
+    },
+    "jpeg_q50": {
+      "remaining_mean_perturbation": 2.64,
+      "perturbation_retention_pct": 51.2,
+      "ssim_to_original": 0.9987
+    },
+    "downsample_resample_75pct": {
+      "remaining_mean_perturbation": 1.9,
+      "perturbation_retention_pct": 36.9,
+      "ssim_to_original": 0.9994
+    },
+    "downsample_resample_50pct": {
+      "remaining_mean_perturbation": 1.3,
+      "perturbation_retention_pct": 25.3,
+      "ssim_to_original": 0.9997
+    },
+    "gaussian_blur_r1": {
+      "remaining_mean_perturbation": 1.6,
+      "perturbation_retention_pct": 31.0,
+      "ssim_to_original": 0.9996
+    },
+    "crop_pad_10pct": {
+      "remaining_mean_perturbation": 29.05,
+      "perturbation_retention_pct": 564.1,
+      "ssim_to_original": 0.8853
+    }
+  },
+  "latency_and_memory": {
+    "256x256": {
+      "duration_seconds": 2.789,
+      "megapixels": 0.066,
+      "output_file_size_bytes": 125278
+    },
+    "512x512": {
+      "duration_seconds": 1.417,
+      "megapixels": 0.262,
+      "output_file_size_bytes": 493378
+    }
+  }
+}

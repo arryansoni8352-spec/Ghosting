@@ -1,0 +1,67 @@
+# Node
+node_modules/
+dist/
+.cache/
+*.tsbuildinfo
+
+# Electron build output
+apps/desktop/dist-electron/
+apps/desktop/release/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+engine/.venv/
+*.pyc
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test artifacts
+test-results/
+playwright-report/
+coverage/
+apps/desktop/tests/*output*.png
+apps/desktop/tests/*.log
+engine/tests/*output*
+
+# Models (downloaded at runtime, never committed)
+engine/models/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Temp processing
+engine/tmp/
+apps/desktop/tmp/
+
+# Release
+release-builds/
+handoff/

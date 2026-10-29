@@ -1,0 +1,165 @@
+{
+  "timestamp": "2026-10-28T17:15:44Z",
+  "target_model": {
+    "name": "ResNet-18",
+    "weights": "ResNet18_Weights.DEFAULT (IMAGENET1K_V1)",
+    "license": "BSD-3-Clause",
+    "device": "cpu"
+  },
+  "per_case_results": [
+    {
+      "case_id": "case_1_coil",
+      "description": "High-contrast concentric geometric rings",
+      "quality": {
+        "psnr_db": 31.73,
+        "ssim": 0.9933,
+        "max_diff_uint8": 8
+      },
+      "clean_prediction": {
+        "class_id": 646,
+        "class_name": "maze",
+        "confidence": 0.7192
+      },
+      "protected_prediction": {
+        "class_id": 646,
+        "class_name": "maze",
+        "confidence": 0.8907
+      },
+      "target_model_effect": {
+        "semantic_class_flipped": false,
+        "relative_feature_disruption_layer3_pct": 34.88,
+        "layer_mse_distances": [
+          0.009626,
+          0.202021,
+          0.058709,
+          0.024046
+        ]
+      },
+      "duration_seconds": 0.491
+    },
+    {
+      "case_id": "case_2_slats",
+      "description": "Parallel periodic linear bars",
+      "quality": {
+        "psnr_db": 31.51,
+        "ssim": 0.9981,
+        "max_diff_uint8": 8
+      },
+      "clean_prediction": {
+        "class_id": 905,
+        "class_name": "window shade",
+        "confidence": 0.2448
+      },
+      "protected_prediction": {
+        "class_id": 581,
+        "class_name": "grille",
+        "confidence": 0.4535
+      },
+      "target_model_effect": {
+        "semantic_class_flipped": true,
+        "relative_feature_disruption_layer3_pct": 55.8,
+        "layer_mse_distances": [
+          0.010609,
+          0.21392,
+          0.063173,
+          0.018904
+        ]
+      },
+      "duration_seconds": 0.454
+    },
+    {
+      "case_id": "case_3_harmonic",
+      "description": "Continuous multi-channel harmonic wave lattice",
+      "quality": {
+        "psnr_db": 32.72,
+        "ssim": 0.9964,
+        "max_diff_uint8": 8
+      },
+      "clean_prediction": {
+        "class_id": 530,
+        "class_name": "digital clock",
+        "confidence": 0.1838
+      },
+      "protected_prediction": {
+        "class_id": 818,
+        "class_name": "spotlight",
+        "confidence": 0.5735
+      },
+      "target_model_effect": {
+        "semantic_class_flipped": true,
+        "relative_feature_disruption_layer3_pct": 107.9,
+        "layer_mse_distances": [
+          0.010726,
+          0.220955,
+          0.112704,
+          0.065523
+        ]
+      },
+      "duration_seconds": 0.421
+    },
+    {
+      "case_id": "case_4_checkerboard",
+      "description": "Periodic high-frequency checkerboard matrix",
+      "quality": {
+        "psnr_db": 31.39,
+        "ssim": 0.9974,
+        "max_diff_uint8": 8
+      },
+      "clean_prediction": {
+        "class_id": 904,
+        "class_name": "window screen",
+        "confidence": 0.5456
+      },
+      "protected_prediction": {
+        "class_id": 904,
+        "class_name": "window screen",
+        "confidence": 0.8164
+      },
+      "target_model_effect": {
+        "semantic_class_flipped": false,
+        "relative_feature_disruption_layer3_pct": 39.23,
+        "layer_mse_distances": [
+          0.011093,
+          0.203129,
+          0.080061,
+          0.046718
+        ]
+      },
+      "duration_seconds": 0.447
+    }
+  ],
+  "transformation_transfers": [
+    {
+      "case_id": "case_1_coil",
+      "transform": "jpeg_q75",
+      "class_id": 646,
+      "class_name": "maze",
+      "confidence": 0.7115,
+      "still_disrupted": false
+    },
+    {
+      "case_id": "case_1_coil",
+      "transform": "downsample_75pct",
+      "class_id": 506,
+      "class_name": "coil",
+      "confidence": 0.8078,
+      "still_disrupted": true
+    },
+    {
+      "case_id": "case_1_coil",
+      "transform": "gaussian_blur_r1",
+      "class_id": 506,
+      "class_name": "coil",
+      "confidence": 0.9469,
+      "still_disrupted": true
+    }
+  ],
+  "aggregate_summary": {
+    "cases_evaluated": 4,
+    "class_flip_rate_pct": 50.0,
+    "mean_relative_feature_disruption_pct": 59.45,
+    "mean_psnr_db": 31.84,
+    "mean_ssim": 0.9963,
+    "all_linf_compliant": true
+  }
+}

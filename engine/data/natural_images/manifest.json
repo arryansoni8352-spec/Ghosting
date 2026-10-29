@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "description": "VeilGuard Natural Image Benchmark Dataset Manifest",
+  "dataset_provenance": "Local-first collection of public-domain (CC0) and user-imported natural images.",
+  "images": [
+    {
+      "image_id": "natural_01_mountain_terrain",
+      "filename": "natural_01_mountain_terrain.png",
+      "source": "VeilGuard Natural Terrain Reference (CC0 1.0 Universal)",
+      "license": "CC0 1.0 Universal / Public Domain",
+      "original_resolution": [
+        256,
+        256
+      ],
+      "target_resolution": [
+        256,
+        256
+      ],
+      "color_mode": "RGB",
+      "preprocessing": "exif_transpose + center_crop_aspect + lanczos_resample",
+      "sha256": "3a07feabbbafd98e287fab59a3812b7c0dd84f863a4ba32df0bb45a1287b2950",
+      "exclusions": "Procedural natural scene; no identifiable persons."
+    },
+    {
+      "image_id": "natural_02_botanical_canopy",
+      "filename": "natural_02_botanical_canopy.png",
+      "source": "VeilGuard Botanical Canopy Reference (CC0 1.0 Universal)",
+      "license": "CC0 1.0 Universal / Public Domain",
+      "original_resolution": [
+        256,
+        256
+      ],
+      "target_resolution": [
+        256,
+        256
+      ],
+      "color_mode": "RGB",
+      "preprocessing": "exif_transpose + center_crop_aspect + lanczos_resample",
+      "sha256": "a60a1f7860094e034739c4bd0c291d77ca8e73529ac3caa603278ed76dc11566",
+      "exclusions": "Botanical foliage texture; no identifiable persons."
+    }
+  ]
+}
