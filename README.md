@@ -83,8 +83,11 @@ npm install
 cd engine
 python -m venv .venv
 
-# On Windows
-.venv\Scripts\activate
+# On Windows (PowerShell)
+.\.venv\Scripts\Activate.ps1
+
+# On Windows (Command Prompt)
+.venv\Scripts\activate.bat
 
 # On macOS / Linux
 source .venv/bin/activate
@@ -125,9 +128,9 @@ Run the comprehensive test suite to verify all components:
 ```bash
 # 1. Python Engine Tests (49 tests)
 cd engine
-pytest tests/ -v
+python -m pytest tests/ -v
 
-# 2. Desktop & IPC Security Tests (36 tests)
+# 2. Desktop & IPC Security Tests (39 tests)
 cd ../apps/desktop
 npm test
 
