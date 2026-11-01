@@ -25,27 +25,27 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 glass-panel border-b border-navy-700/60 bg-navy-950/85">
+    <header className="sticky top-0 z-50 glass-panel border-b border-fern-700/50 bg-rainforest-950/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Brand */}
           <div className="flex items-center">
             <button
               onClick={() => handleNavClick('home')}
-              className="flex items-center space-x-3 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-indigo rounded-lg p-1"
+              className="flex items-center space-x-3 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber rounded-lg p-1"
               aria-label="VeilGuard Home"
             >
-              <div className="w-9 h-9 rounded-lg bg-cyber-indigo/15 border border-cyber-indigo/40 flex items-center justify-center text-cyber-violet group-hover:border-cyber-indigo transition-colors shadow-subtle">
-                <Shield className="w-5 h-5 text-cyber-indigo" />
+              <div className="w-9 h-9 rounded-lg bg-amber-500/15 border border-amber-500/35 flex items-center justify-center text-amber group-hover:border-amber transition-colors shadow-subtle">
+                <Shield className="w-5 h-5 text-amber" />
               </div>
               <div>
                 <div className="flex items-center space-x-2">
-                  <span className="font-bold text-lg text-white tracking-tight">VeilGuard</span>
-                  <span className="badge-tag bg-navy-800 text-slate-300 border border-navy-700 text-[11px] font-mono">
+                  <span className="font-bold text-lg text-ivory tracking-tight">VeilGuard</span>
+                  <span className="badge-tag badge-moss text-[11px] font-mono">
                     v0.1.0-rc1
                   </span>
                 </div>
-                <span className="text-[11px] text-slate-400 block -mt-0.5 tracking-wide">
+                <span className="text-[11px] text-moss-300/80 block -mt-0.5 tracking-wide">
                   Image Privacy Research
                 </span>
               </div>
@@ -62,8 +62,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
                   onClick={() => handleNavClick(item.id)}
                   className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-cyber-indigo/15 text-white border border-cyber-indigo/30'
-                      : 'text-slate-300 hover:text-white hover:bg-navy-850'
+                      ? 'bg-amber-500/15 text-amber-200 border border-amber-500/35 shadow-subtle'
+                      : 'text-ivory-300 hover:text-ivory hover:bg-rainforest-850/60'
                   }`}
                   aria-current={isActive ? 'page' : undefined}
                 >
@@ -80,14 +80,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
               href="https://github.com/arryansoni8352-spec/veilguard"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 px-3 py-1.5 rounded-md text-xs font-mono font-medium text-slate-300 bg-navy-850 hover:bg-navy-800 border border-navy-700 hover:border-slate-500 transition-colors shadow-subtle"
+              className="flex items-center space-x-2 px-3 py-1.5 rounded-md text-xs font-mono font-medium text-ivory-200 bg-rainforest-850/70 hover:bg-rainforest-800 border border-fern-700/60 hover:border-amber-500/50 transition-colors shadow-subtle"
               aria-label="View VeilGuard Source Code on GitHub"
             >
-              <svg className="w-4 h-4 fill-current text-slate-300" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-4 h-4 fill-current text-ivory-300" viewBox="0 0 24 24" aria-hidden="true">
                 <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
               </svg>
               <span>GitHub</span>
-              <ExternalLink className="w-3 h-3 text-slate-400" />
+              <ExternalLink className="w-3 h-3 text-moss-300" />
             </a>
           </div>
 
@@ -95,7 +95,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
           <div className="flex md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-md text-slate-300 hover:text-white hover:bg-navy-850 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-indigo"
+              className="p-2 rounded-md text-ivory-300 hover:text-ivory hover:bg-rainforest-850 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber"
               aria-label={mobileMenuOpen ? 'Close Menu' : 'Open Menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -107,7 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden glass-panel border-b border-navy-700 px-4 pt-2 pb-4 space-y-1 bg-navy-950">
+        <div className="md:hidden glass-panel border-b border-fern-700/60 px-4 pt-2 pb-4 space-y-1 bg-rainforest-950/95">
           {navItems.map(item => {
             const isActive = currentPage === item.id;
             return (
@@ -116,8 +116,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
                 onClick={() => handleNavClick(item.id)}
                 className={`w-full flex items-center px-3 py-2.5 rounded-md text-base font-medium transition-colors ${
                   isActive
-                    ? 'bg-cyber-indigo/20 text-white border border-cyber-indigo/40'
-                    : 'text-slate-300 hover:text-white hover:bg-navy-850'
+                    ? 'bg-amber-500/20 text-amber-200 border border-amber-500/40 shadow-subtle'
+                    : 'text-ivory-300 hover:text-ivory hover:bg-rainforest-850/60'
                 }`}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -126,17 +126,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
               </button>
             );
           })}
-          <div className="pt-2 border-t border-navy-800">
+          <div className="pt-2 border-t border-fern-800">
             <a
               href="https://github.com/arryansoni8352-spec/veilguard"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-mono text-slate-300 bg-navy-850 hover:bg-navy-800 border border-navy-700"
+              className="flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-mono text-ivory-200 bg-rainforest-850/70 hover:bg-rainforest-800 border border-fern-700/60"
             >
               <div className="flex items-center space-x-2">
                 <span>View on GitHub</span>
               </div>
-              <ExternalLink className="w-4 h-4 text-slate-400" />
+              <ExternalLink className="w-4 h-4 text-moss-300" />
             </a>
           </div>
         </div>

@@ -18,7 +18,7 @@ describe('Website UI & Navigation Quality Gates', () => {
 
     expect(screen.getAllByText('VeilGuard').length).toBeGreaterThan(0);
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Investigating Bounded Adversarial Perturbations/i);
-    expect(screen.getByRole('button', { name: /Launch Browser Privacy Tools/i })).toBeInTheDocument();
+    expect(screen.getByText(/Scientific Transparency & Capability Boundaries/i)).toBeInTheDocument();
   });
 
   it('navigates to Privacy Tools page and renders upload zone', async () => {
