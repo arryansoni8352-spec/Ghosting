@@ -26,11 +26,22 @@ describe('Website UI & Navigation Quality Gates', () => {
     render(<App />);
 
     const nav = screen.getByRole('navigation', { name: /Main Navigation/i });
-    const toolsBtn = within(nav).getByRole('button', { name: /Privacy Tools/i });
+    const toolsBtn = within(nav).getByRole('button', { name: /Photo Privacy|Privacy Tools/i });
     fireEvent.click(toolsBtn);
 
     expect(await screen.findByText(/Image Metadata Inspector & Sanitizer/i)).toBeInTheDocument();
     expect(screen.getByText(/Drag and drop your photo here, or click to browse/i)).toBeInTheDocument();
+  });
+
+  it('navigates to Video Studio page and displays video suite', async () => {
+    render(<App />);
+
+    const nav = screen.getByRole('navigation', { name: /Main Navigation/i });
+    const videoBtn = within(nav).getByRole('button', { name: /Video Studio/i });
+    fireEvent.click(videoBtn);
+
+    expect(await screen.findByText(/Inspect, sanitize & protect your videos locally/i)).toBeInTheDocument();
+    expect(screen.getByText(/Drop your video here, or click to browse/i)).toBeInTheDocument();
   });
 
   it('renders prominent drag-and-drop upload zone on Home', () => {

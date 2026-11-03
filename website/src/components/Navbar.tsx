@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Menu, X, ArrowRight } from 'lucide-react';
 import { GhostLogo } from './GhostLogo';
 
-export type PageRoute = 'home' | 'privacy-tools' | 'about' | 'privacy' | 'security';
+export type PageRoute = 'home' | 'privacy-tools' | 'video-studio' | 'about' | 'privacy' | 'security';
 
 interface NavbarProps {
   currentPage: PageRoute;
@@ -14,7 +14,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
 
   const navItems: { id: PageRoute; label: string }[] = [
     { id: 'home', label: 'Overview' },
-    { id: 'privacy-tools', label: 'Privacy Tools' },
+    { id: 'privacy-tools', label: 'Photo Privacy' },
+    { id: 'video-studio', label: 'Video Studio' },
     { id: 'about', label: 'About' },
     { id: 'security', label: 'Security' },
   ];

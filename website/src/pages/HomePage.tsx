@@ -228,12 +228,19 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onFileSelect }) 
             </p>
           </div>
 
-          <div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => onNavigate('privacy-tools')}
-              className="btn-primary px-6 py-2.5 text-xs font-medium space-x-1.5"
+              className="btn-primary px-6 py-2.5 text-xs font-medium space-x-1.5 w-full sm:w-auto"
             >
-              <span>Open Privacy Tools</span>
+              <span>Clean Photos</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => onNavigate('video-studio')}
+              className="btn-secondary px-6 py-2.5 text-xs font-medium space-x-1.5 w-full sm:w-auto"
+            >
+              <span>Open Video Studio</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

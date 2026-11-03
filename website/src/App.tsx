@@ -3,6 +3,7 @@ import { Navbar, PageRoute } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
 import { PrivacyToolsPage } from './pages/PrivacyToolsPage';
+import { VideoStudioPage } from './pages/VideoStudioPage';
 import { AboutPage } from './pages/AboutPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { SecurityPolicyPage } from './pages/SecurityPolicyPage';
@@ -13,6 +14,7 @@ export const App: React.FC = () => {
     const hash = window.location.hash.replace(/^#\/?/, '').trim().toLowerCase();
     if (!hash || hash === 'home') return 'home';
     if (hash === 'privacy-tools' || hash === 'tools' || hash === 'cleaner') return 'privacy-tools';
+    if (hash === 'video-studio' || hash === 'video' || hash === 'video-cleaner') return 'video-studio';
     if (hash === 'about' || hash === 'project') return 'about';
     if (hash === 'privacy' || hash === 'privacy-policy') return 'privacy';
     if (hash === 'security') return 'security';
@@ -52,7 +54,8 @@ export const App: React.FC = () => {
   useEffect(() => {
     const titles: Record<string, string> = {
       home: 'GHOSTING — Minimalist Image Privacy & Metadata Sanitization',
-      'privacy-tools': 'Privacy Tools & EXIF Sanitizer — GHOSTING',
+      'privacy-tools': 'Photo Privacy & EXIF Sanitizer — GHOSTING',
+      'video-studio': 'Video Privacy & Protection Studio — GHOSTING',
       about: 'About Mission & Principles — GHOSTING',
       privacy: 'Privacy Policy — GHOSTING',
       security: 'Security Policy & Reporting — GHOSTING',
@@ -78,6 +81,7 @@ export const App: React.FC = () => {
             onClearInitialFile={() => setSelectedFileForTools(null)}
           />
         )}
+        {currentPage === 'video-studio' && <VideoStudioPage />}
         {currentPage === 'about' && <AboutPage onNavigate={navigateTo} />}
         {currentPage === 'privacy' && <PrivacyPolicyPage onNavigate={navigateTo} />}
         {currentPage === 'security' && <SecurityPolicyPage onNavigate={navigateTo} />}

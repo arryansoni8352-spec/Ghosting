@@ -33,7 +33,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   onClick={() => onNavigate('privacy-tools')}
                   className="text-neutral-500 hover:text-neutral-900 transition-colors text-left"
                 >
-                  Metadata Stripper
+                  Photo Privacy
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => onNavigate('video-studio')}
+                  className="text-neutral-500 hover:text-neutral-900 transition-colors text-left"
+                >
+                  Video Studio
                 </button>
               </li>
               <li>
