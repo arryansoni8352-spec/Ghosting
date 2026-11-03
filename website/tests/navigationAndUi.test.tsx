@@ -16,9 +16,10 @@ describe('Website UI & Navigation Quality Gates', () => {
   it('renders brand header, navigation items, and hero title on Home', () => {
     render(<App />);
 
-    expect(screen.getAllByText('VeilGuard').length).toBeGreaterThan(0);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Investigating Bounded Adversarial Perturbations/i);
-    expect(screen.getByText(/Scientific Transparency & Capability Boundaries/i)).toBeInTheDocument();
+    expect(screen.getAllByText('GHOSTING').length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/The invisible layer of privacy for your/i);
+    expect(screen.getByText(/Zero Network Calls/i)).toBeInTheDocument();
+    expect(screen.getByText(/Exact GPS Removal/i)).toBeInTheDocument();
   });
 
   it('navigates to Privacy Tools page and renders upload zone', async () => {
@@ -32,43 +33,35 @@ describe('Website UI & Navigation Quality Gates', () => {
     expect(screen.getByText(/Drag and drop your photo here, or click to browse/i)).toBeInTheDocument();
   });
 
-  it('navigates to Research page and displays empirical benchmark tables', async () => {
+  it('renders prominent drag-and-drop upload zone on Home', () => {
     render(<App />);
 
-    const nav = screen.getByRole('navigation', { name: /Main Navigation/i });
-    const researchBtn = within(nav).getByRole('button', { name: /Research & Benchmarks/i });
-    fireEvent.click(researchBtn);
-
-    expect(await screen.findByText(/Research Methodology & Empirical Benchmarks/i)).toBeInTheDocument();
-    expect(screen.getByText(/Empirical Perceptual Quality Benchmark/i)).toBeInTheDocument();
-    expect(screen.getByText(/Transformation Robustness Benchmark/i)).toBeInTheDocument();
-    expect(screen.getByText(/32.86 dB/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/0.9964/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Drop your photo here, or click to browse/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Select Photo/i).length).toBeGreaterThan(0);
   });
 
-  it('navigates to Download page and honestly displays no-release message when 0 releases exist', async () => {
+  it('navigates to About page and displays mission and architecture', async () => {
     render(<App />);
 
     const nav = screen.getByRole('navigation', { name: /Main Navigation/i });
-    const downloadBtn = within(nav).getByRole('button', { name: /^Download$/i });
-    fireEvent.click(downloadBtn);
-
-    expect(await screen.findByText(/No verified binary release published yet/i)).toBeInTheDocument();
-    expect(screen.getByText(/Quickstart: Developer & Research Source Setup/i)).toBeInTheDocument();
-  });
-
-  it('navigates to About page and displays roadmap and licensing', async () => {
-    render(<App />);
-
-    const nav = screen.getByRole('navigation', { name: /Main Navigation/i });
-    const aboutBtn = within(nav).getByRole('button', { name: /About & Roadmap/i });
+    const aboutBtn = within(nav).getByRole('button', { name: /^About$/i });
     fireEvent.click(aboutBtn);
 
-    expect(await screen.findByRole('heading', { level: 1, name: /About VeilGuard/i })).toBeInTheDocument();
-    expect(screen.getByText(/Milestone 1: Local-First Core Architecture/i)).toBeInTheDocument();
-    expect(screen.getByText(/Milestone 2: Research Integration & PGD Feature Disruption/i)).toBeInTheDocument();
-    expect(screen.getByText(/Milestone 3: Automated Zero-Budget Publication & CI/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/MIT License/i).length).toBeGreaterThan(0);
+    expect(await screen.findByRole('heading', { level: 1, name: /About GHOSTING/i })).toBeInTheDocument();
+    expect(screen.getByText(/Absolute Local Privacy/i)).toBeInTheDocument();
+    expect(screen.getByText(/Full Metadata Eradication/i)).toBeInTheDocument();
+    expect(screen.getByText(/Lossless Orientation Normalization/i)).toBeInTheDocument();
+  });
+
+  it('navigates to Security page and displays zero-exposure architecture', async () => {
+    render(<App />);
+
+    const nav = screen.getByRole('navigation', { name: /Main Navigation/i });
+    const secBtn = within(nav).getByRole('button', { name: /^Security$/i });
+    fireEvent.click(secBtn);
+
+    expect(await screen.findByRole('heading', { level: 1, name: /Security Policy & Reporting/i })).toBeInTheDocument();
+    expect(screen.getByText(/Zero-Exposure Architecture/i)).toBeInTheDocument();
   });
 
   it('renders 404 NotFound page when given an unrecognized hash route', async () => {
@@ -81,18 +74,6 @@ describe('Website UI & Navigation Quality Gates', () => {
     const returnBtn = screen.getByRole('button', { name: /Return to Home/i });
     fireEvent.click(returnBtn);
 
-    expect(await screen.findByText(/Investigating Bounded Adversarial Perturbations/i)).toBeInTheDocument();
-  });
-
-  it('toggles architecture tabs on the Home page without errors', async () => {
-    render(<App />);
-
-    const ipcTab = screen.getByRole('button', { name: /JSON IPC Stdio Protocol/i });
-    fireEvent.click(ipcTab);
-    expect(screen.getByText(/run_perturbation/i)).toBeInTheDocument();
-
-    const boundsTab = screen.getByRole('button', { name: /On-Disk \$L_\\infty\$ Verification/i });
-    fireEvent.click(boundsTab);
-    expect(screen.getByText(/Parametric Bound/i)).toBeInTheDocument();
+    expect(await screen.findByText(/The invisible layer of privacy for your/i)).toBeInTheDocument();
   });
 });

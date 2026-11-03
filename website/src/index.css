@@ -5,154 +5,135 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color-scheme: light;
   }
 
   body {
-    background-color: #121A14;
-    background-image: 
-      radial-gradient(circle at 50% -10%, rgba(214, 166, 93, 0.08) 0%, transparent 60%),
-      radial-gradient(circle at 10% 35%, rgba(82, 107, 76, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 90% 75%, rgba(163, 170, 120, 0.05) 0%, transparent 50%);
-    background-attachment: fixed;
-    color: #F2EBDD;
+    background-color: #FFFFFF;
+    color: #171717;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Accessible focus indicators with warm amber accent */
+  /* Accessible focus rings */
   *:focus-visible {
-    outline: 2px solid #D6A65D;
+    outline: 2px solid #171717;
     outline-offset: 2px;
   }
 
   code, pre, kbd, samp {
-    font-family: 'Space Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 }
 
 @layer components {
-  /* Translucent olive & algae-green glass panels with specular top edge highlight */
-  .glass-panel {
-    background: linear-gradient(135deg, rgba(40, 56, 45, 0.75) 0%, rgba(24, 34, 27, 0.85) 100%);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(82, 107, 76, 0.35);
-    border-top: 1px solid rgba(242, 235, 221, 0.22);
-    box-shadow: 0 10px 30px -4px rgba(8, 14, 10, 0.5), inset 0 1px 1px 0 rgba(242, 235, 221, 0.12);
+  /* Minimalist Premium Card */
+  .ghost-card {
+    background: #FFFFFF;
+    border: 1px solid #EAEAEA;
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    transition: border-color 0.15s ease;
   }
 
-  /* Forest card with subtle amber reflection & smooth hover */
-  .glass-card {
-    background: linear-gradient(145deg, rgba(40, 56, 45, 0.45) 0%, rgba(24, 34, 27, 0.65) 100%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(82, 107, 76, 0.28);
-    border-top: 1px solid rgba(242, 235, 221, 0.16);
-    box-shadow: 0 8px 24px -4px rgba(8, 14, 10, 0.45), inset 0 1px 1px 0 rgba(242, 235, 221, 0.08);
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  .ghost-card:hover {
+    border-color: #D4D4D4;
   }
 
-  .glass-card:hover {
-    border-color: rgba(214, 166, 93, 0.45);
-    border-top-color: rgba(242, 235, 221, 0.35);
-    background: linear-gradient(145deg, rgba(54, 74, 61, 0.6) 0%, rgba(30, 43, 34, 0.8) 100%);
-    box-shadow: 0 12px 32px -4px rgba(8, 14, 10, 0.6), 0 0 20px -4px rgba(214, 166, 93, 0.18), inset 0 1px 2px 0 rgba(242, 235, 221, 0.2);
-    transform: translateY(-1px);
+  /* Minimalist Section Panel */
+  .ghost-panel {
+    background: #F8F9FA;
+    border: 1px solid #EAEAEA;
+    border-radius: 1rem;
   }
 
-  /* Glass-like amber sunlight action button */
-  .glass-btn-primary {
-    background: linear-gradient(135deg, rgba(214, 166, 93, 0.92) 0%, rgba(168, 124, 51, 0.88) 100%);
-    color: #121A14;
-    font-weight: 600;
-    border: 1px solid rgba(245, 229, 196, 0.5);
-    border-top: 1px solid rgba(255, 255, 255, 0.75);
-    box-shadow: 0 4px 14px 0 rgba(214, 166, 93, 0.35), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  .glass-card, .glass-panel {
+    background: #FFFFFF;
+    border: 1px solid #EAEAEA;
+    border-radius: 1rem;
   }
 
-  .glass-btn-primary:hover {
-    background: linear-gradient(135deg, rgba(226, 188, 122, 0.98) 0%, rgba(185, 140, 60, 0.95) 100%);
-    box-shadow: 0 6px 20px 0 rgba(214, 166, 93, 0.5), inset 0 1px 2px 0 rgba(255, 255, 255, 0.6);
-    transform: translateY(-1px);
-  }
-
-  /* Wet fern secondary glass button */
-  .glass-btn-secondary {
-    background: linear-gradient(145deg, rgba(82, 107, 76, 0.25) 0%, rgba(40, 56, 45, 0.4) 100%);
-    color: #F2EBDD;
-    font-weight: 500;
-    border: 1px solid rgba(82, 107, 76, 0.5);
-    border-top: 1px solid rgba(242, 235, 221, 0.25);
-    box-shadow: 0 4px 12px 0 rgba(8, 14, 10, 0.4), inset 0 1px 1px 0 rgba(242, 235, 221, 0.1);
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .glass-btn-secondary:hover {
-    background: linear-gradient(145deg, rgba(82, 107, 76, 0.45) 0%, rgba(54, 74, 61, 0.6) 100%);
-    border-color: rgba(163, 170, 120, 0.6);
-    color: #FFFFFF;
-    transform: translateY(-1px);
-  }
-
-  /* Monospaced badges */
-  .badge-tag {
+  /* Primary Button: #171717 with white text, hover #333333 */
+  .btn-primary, .glass-btn-primary {
     display: inline-flex;
     align-items: center;
-    padding: 0.15rem 0.625rem;
+    justify-content: center;
+    background: #171717;
+    color: #FFFFFF;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid #171717;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .btn-primary:hover, .glass-btn-primary:hover {
+    background: #333333;
+    border-color: #333333;
+    color: #FFFFFF;
+  }
+
+  .btn-primary:active, .glass-btn-primary:active {
+    background: #171717;
+  }
+
+  /* Secondary Button: #FFFFFF with #171717 text, border #EAEAEA, hover #F8F9FA */
+  .btn-secondary, .glass-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    color: #171717;
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid #EAEAEA;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .btn-secondary:hover, .glass-btn-secondary:hover {
+    background: #F8F9FA;
+    border-color: #D4D4D4;
+    color: #171717;
+  }
+
+  /* Minimal Monochrome Badges */
+  .badge-tag, .badge-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.625rem;
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 500;
-    font-family: 'Space Mono', 'JetBrains Mono', monospace;
-    letter-spacing: 0.025em;
-  }
-
-  .badge-moss {
-    background: rgba(163, 170, 120, 0.15);
-    color: #C9CFA5;
-    border: 1px solid rgba(163, 170, 120, 0.35);
-  }
-
-  .badge-amber {
-    background: rgba(214, 166, 93, 0.15);
-    color: #EDD29C;
-    border: 1px solid rgba(214, 166, 93, 0.35);
-  }
-
-  .badge-fern {
-    background: rgba(82, 107, 76, 0.25);
-    color: #9DBA96;
-    border: 1px solid rgba(82, 107, 76, 0.4);
-  }
-
-  .badge-blossom {
-    background: rgba(229, 139, 170, 0.15);
-    color: #F4C5D4;
-    border: 1px solid rgba(229, 139, 170, 0.35);
+    background: #F8F9FA;
+    color: #171717;
+    border: 1px solid #EAEAEA;
   }
 }
 
-/* Custom minimal scrollbar in rainforest & wet fern */
+/* Subtle, minimal scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #121A14;
+  background: #FFFFFF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #28382D;
-  border-radius: 4px;
-  border: 1px solid rgba(82, 107, 76, 0.3);
+  background: #EAEAEA;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #526B4C;
+  background: #D4D4D4;
 }
 
-/* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

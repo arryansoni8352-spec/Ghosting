@@ -1,6 +1,6 @@
 import React from 'react';
-import { Shield, Lock, ExternalLink, AlertCircle } from 'lucide-react';
 import { PageRoute } from './Navbar';
+import { GhostLogo } from './GhostLogo';
 
 interface FooterProps {
   onNavigate: (page: PageRoute) => void;
@@ -8,136 +8,87 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="border-t border-fern-800/60 bg-rainforest-950/90 text-ivory-300 text-sm mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand & Mission */}
+    <footer className="border-t border-neutral-200 bg-white text-neutral-500 text-sm mt-32">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+          {/* Brand & Purpose */}
           <div className="md:col-span-2 space-y-4">
-            <div className="flex items-center space-x-2">
-              <Shield className="w-5 h-5 text-amber" />
-              <span className="font-bold text-base text-ivory tracking-tight">VeilGuard</span>
-              <span className="badge-tag badge-moss text-[10px] font-mono">
-                Open Source
-              </span>
-            </div>
-            <p className="text-ivory-400 text-xs leading-relaxed max-w-md">
-              VeilGuard is an experimental, local-first image privacy research application exploring
-              bounded adversarial perturbations ($L_\infty \le 8/255$) and client-side metadata sanitization.
-              Built on principles of scientific transparency, zero telemetry, and honest capability boundaries.
+            <GhostLogo height={28} />
+            <p className="text-neutral-500 text-sm leading-relaxed max-w-sm">
+              Minimalist photo privacy. Strip hidden metadata, GPS tags, and camera serial numbers directly in your browser.
             </p>
-            <div className="flex items-center space-x-2 text-xs text-moss pt-1">
-              <Lock className="w-3.5 h-3.5" />
-              <span>100% Client-Side Privacy: Your photos never leave your device.</span>
+            <div className="text-xs text-neutral-400">
+              Zero network transmissions • 100% Client-side execution
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Product & Tools */}
           <div>
-            <h3 className="text-ivory font-semibold text-xs uppercase tracking-wider mb-3">
-              Research & Tools
+            <h3 className="text-neutral-900 font-semibold text-xs uppercase tracking-wider mb-4">
+              Product
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-3 text-sm">
               <li>
                 <button
                   onClick={() => onNavigate('privacy-tools')}
-                  className="text-ivory-400 hover:text-amber transition-colors text-left"
+                  className="text-neutral-500 hover:text-neutral-900 transition-colors text-left"
                 >
-                  Privacy Tools (EXIF Inspector & Cleaner)
+                  Metadata Stripper
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => onNavigate('research')}
-                  className="text-ivory-400 hover:text-amber transition-colors text-left"
+                  onClick={() => onNavigate('home')}
+                  className="text-neutral-500 hover:text-neutral-900 transition-colors text-left"
                 >
-                  Empirical Benchmarks & Methodology
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('download')}
-                  className="text-ivory-400 hover:text-amber transition-colors text-left"
-                >
-                  Verified Releases & Source Setup
+                  Overview
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onNavigate('about')}
-                  className="text-ivory-400 hover:text-amber transition-colors text-left"
+                  className="text-neutral-500 hover:text-neutral-900 transition-colors text-left"
                 >
-                  Project Roadmap & Attribution
+                  About
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Governance & Policies */}
+          {/* Privacy & Trust */}
           <div>
-            <h3 className="text-ivory font-semibold text-xs uppercase tracking-wider mb-3">
-              Governance & Policies
+            <h3 className="text-neutral-900 font-semibold text-xs uppercase tracking-wider mb-4">
+              Trust
             </h3>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-3 text-sm">
               <li>
                 <button
                   onClick={() => onNavigate('privacy')}
-                  className="text-ivory-400 hover:text-amber transition-colors text-left flex items-center space-x-1"
+                  className="text-neutral-500 hover:text-neutral-900 transition-colors text-left"
                 >
-                  <span>Privacy Policy</span>
+                  Privacy Policy
                 </button>
               </li>
               <li>
                 <button
                   onClick={() => onNavigate('security')}
-                  className="text-ivory-400 hover:text-amber transition-colors text-left flex items-center space-x-1"
+                  className="text-neutral-500 hover:text-neutral-900 transition-colors text-left"
                 >
-                  <span>Security & Vulnerability Reporting</span>
+                  Security Architecture
                 </button>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/arryansoni8352-spec/veilguard/blob/main/LICENSE"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ivory-400 hover:text-amber transition-colors flex items-center space-x-1"
-                >
-                  <span>MIT License</span>
-                  <ExternalLink className="w-3 h-3 text-moss-300" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/arryansoni8352-spec/veilguard/issues"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ivory-400 hover:text-amber transition-colors flex items-center space-x-1"
-                >
-                  <span>Issue Tracker</span>
-                  <ExternalLink className="w-3 h-3 text-moss-300" />
-                </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Honest Scientific Limitation Notice */}
-        <div className="mt-8 pt-6 border-t border-fern-800/80">
-          <div className="p-3.5 rounded-lg bg-rainforest-900/60 border border-fern-800 text-xs text-ivory-400 flex items-start space-x-3">
-            <AlertCircle className="w-4 h-4 text-amber flex-shrink-0 mt-0.5" />
-            <div className="leading-relaxed">
-              <span className="font-semibold text-ivory-200">Important Research Notice: </span>
-              VeilGuard explores probabilistic, model-targeted adversarial perturbations. It does
-              <strong className="text-ivory font-semibold"> not </strong> guarantee universal protection against AI editing, generative inpainting, model training, or intentional manual manipulation. Lossy re-compression (e.g. JPEG Q &lt; 75), heavy downsampling, and spatial blurring degrade or neutralize perturbations.
-            </div>
-          </div>
-          <div className="mt-4 flex flex-col sm:flex-row justify-between items-center text-xs text-ivory-400">
-            <p>© {new Date().getFullYear()} VeilGuard Research Contributors. Open source under MIT License.</p>
-            <p className="mt-2 sm:mt-0 font-mono text-[11px] text-moss-300">
-              commit: 7113d33 • branch: main
-            </p>
-          </div>
+        {/* Bottom Bar */}
+        <div className="mt-16 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row justify-between items-center text-xs text-neutral-400 gap-4">
+          <p>© {new Date().getFullYear()} GHOSTING. All rights reserved.</p>
+          <p>Local-First Photo Privacy</p>
         </div>
       </div>
     </footer>
   );
 };
+
+export default Footer;

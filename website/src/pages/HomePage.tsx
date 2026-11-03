@@ -1,300 +1,240 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
-  Layers,
   ArrowRight,
-  CheckCircle2,
-  AlertTriangle,
-  Zap,
-  Terminal,
+  ShieldCheck,
+  MapPinOff,
+  Compass,
+  Upload,
 } from 'lucide-react';
 import { PageRoute } from '../components/Navbar';
+import { GhostMascot } from '../components/GhostLogo';
 
 interface HomePageProps {
   onNavigate: (page: PageRoute) => void;
+  onFileSelect?: (file: File) => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
-  const [activeArchTab, setActiveArchTab] = useState<'architecture' | 'engine' | 'bounds'>('architecture');
+export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onFileSelect }) => {
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = (file: File) => {
+    if (onFileSelect) {
+      onFileSelect(file);
+    } else {
+      onNavigate('privacy-tools');
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  };
 
   return (
-    <div className="space-y-16 sm:space-y-20 py-6">
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-8 pb-4 overflow-hidden">
-        {/* Subtle decorative warm amber ambient glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-amber-500/10 blur-[130px] rounded-full pointer-events-none -z-10" />
-
-        <div className="max-w-4xl mx-auto text-center space-y-6 px-4">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-rainforest-900/80 border border-fern-700/60 shadow-subtle text-xs text-moss">
-            <span className="w-2 h-2 rounded-full bg-moss animate-pulse" />
-            <span className="font-mono font-medium">v0.1.0-rc1 Source Available</span>
-            <span className="text-fern-700">•</span>
-            <span className="text-ivory-300">100% Local-First Engine</span>
+    <div className="space-y-24 sm:space-y-32 py-12 sm:py-20">
+      {/* 1. HERO SECTION & PROMINENT UPLOAD AREA */}
+      <section className="max-w-3xl mx-auto text-center space-y-10 px-4 sm:px-6">
+        <div className="space-y-4">
+          {/* Subtle Tag */}
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-neutral-50 border border-neutral-200 text-xs text-neutral-600">
+            <GhostMascot size={14} />
+            <span>Local-First Photo Privacy</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-ivory tracking-tight leading-tight">
-            Investigating Bounded Adversarial Perturbations for{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber via-moss to-ivory">
-              Image Privacy
-            </span>
+          {/* Headline */}
+          <h1 className="text-4xl sm:text-6xl font-bold text-neutral-900 tracking-tight leading-[1.08] max-w-2xl mx-auto">
+            The invisible layer of privacy for your photos
           </h1>
 
-          <p className="max-w-3xl mx-auto text-base sm:text-lg text-ivory-300 leading-relaxed font-normal">
-            VeilGuard is an open-source, local-first experimental desktop application and research tool
-            exploring mathematical perturbations designed to disrupt deep neural image-processing representations
-            while preserving perceptual fidelity ($L_\infty \le 8/255$).
+          {/* Subtitle */}
+          <p className="max-w-lg mx-auto text-base sm:text-lg text-neutral-500 leading-relaxed">
+            Strip hidden GPS coordinates, camera serial numbers, and device fingerprints directly in your browser. Zero server uploads.
           </p>
         </div>
-      </section>
 
-      {/* 2. HONEST RESEARCH LIMITATIONS BANNER */}
-      <section className="max-w-5xl mx-auto px-4">
-        <div className="glass-card rounded-xl p-6 border-amber-500/35 bg-rainforest-900/80 shadow-card">
-          <div className="flex items-start space-x-4">
-            <div className="p-2.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber flex-shrink-0">
-              <AlertTriangle className="w-6 h-6" />
+        {/* PROMINENT FILE UPLOAD AREA */}
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
+          className={`border-2 border-dashed rounded-2xl p-10 sm:p-14 text-center cursor-pointer transition-all ${
+            isDragging
+              ? 'border-neutral-900 bg-neutral-50'
+              : 'border-neutral-200 hover:border-neutral-900 bg-white hover:bg-neutral-50/50 shadow-subtle'
+          }`}
+          role="button"
+          tabIndex={0}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              fileInputRef.current?.click();
+            }
+          }}
+          aria-label="Upload photo to sanitize metadata"
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".png,.jpg,.jpeg,.webp,.tiff,.tif,.bmp,image/*"
+            onChange={handleInputChange}
+            className="hidden"
+            id="homepage-file-input"
+          />
+
+          <div className="max-w-sm mx-auto space-y-4 pointer-events-none">
+            <div className="w-12 h-12 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-center mx-auto text-neutral-700">
+              <Upload className="w-5 h-5" />
             </div>
-            <div className="space-y-2">
-              <h2 className="text-base font-semibold text-ivory">
-                Scientific Transparency & Capability Boundaries
-              </h2>
-              <p className="text-sm text-ivory-300 leading-relaxed">
-                VeilGuard is an experimental research project. It does <strong>not</strong> guarantee universal immunity against
-                generative AI, automated inpainting, facial recognition, or commercial editors (e.g. Adobe Firefly, DALL-E, Midjourney).
-                Adversarial perturbations are mathematically bounded and model-specific. Common transformations such as lossy JPEG re-compression
-                below Quality 75, spatial downsampling, or Gaussian blur degrade or neutralize the adversarial effect.
-              </p>
-              <div className="pt-2">
-                <button
-                  onClick={() => onNavigate('research')}
-                  className="text-xs text-amber-300 hover:text-amber-200 hover:underline font-medium inline-flex items-center space-x-1"
-                >
-                  <span>Review transformation robustness benchmark tables in our Research section</span>
-                  <ArrowRight className="w-3 h-3" />
-                </button>
+
+            <div className="space-y-1">
+              <div className="text-base font-semibold text-neutral-900">
+                Drop your photo here, or click to browse
               </div>
+              <p className="text-xs text-neutral-500">
+                Supports JPEG, PNG, and WebP (up to 50 MB)
+              </p>
             </div>
+
+            <div className="pt-2">
+              <span className="btn-primary pointer-events-auto text-xs px-6 py-2.5">
+                Select Photo
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Supporting Trust Row */}
+        <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-500">
+          <div className="flex items-center space-x-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-neutral-900" />
+            <span>Zero Network Calls</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <MapPinOff className="w-3.5 h-3.5 text-neutral-900" />
+            <span>Exact GPS Removal</span>
+          </div>
+          <div className="flex items-center space-x-1.5">
+            <Compass className="w-3.5 h-3.5 text-neutral-900" />
+            <span>Upright EXIF Orientation</span>
           </div>
         </div>
       </section>
 
-      {/* 3. HONEST INTERFACE & ARCHITECTURE PREVIEW */}
-      <section className="max-w-5xl mx-auto px-4 space-y-8">
-        <div className="text-center space-y-3">
-          <h2 className="text-2xl sm:text-3xl font-bold text-ivory tracking-tight">
-            Engine Architecture & Inspection Pipeline
+      {/* 2. HOW IT WORKS (3 Simple Steps) */}
+      <section id="how-it-works" className="max-w-3xl mx-auto px-4 sm:px-6 space-y-8">
+        <div className="text-center space-y-1.5 max-w-md mx-auto">
+          <div className="text-xs uppercase tracking-wider font-semibold text-neutral-400">Process</div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight">
+            How GHOSTING Works
           </h2>
-          <p className="text-sm text-moss-300 max-w-2xl mx-auto">
-            VeilGuard separates presentation, communication, and adversarial computation across three strictly isolated layers.
+          <p className="text-xs sm:text-sm text-neutral-500">
+            A frictionless client-side workflow that strips metadata without altering visual pixels.
           </p>
         </div>
 
-        {/* Tab Controls */}
-        <div className="flex justify-center space-x-2 border-b border-fern-800/80 pb-3">
-          <button
-            onClick={() => setActiveArchTab('architecture')}
-            className={`px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all ${
-              activeArchTab === 'architecture'
-                ? 'bg-amber-500/20 text-ivory border border-amber-500/40 shadow-subtle'
-                : 'text-moss-300 hover:text-ivory'
-            }`}
-          >
-            3-Layer System Model
-          </button>
-          <button
-            onClick={() => setActiveArchTab('engine')}
-            className={`px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all ${
-              activeArchTab === 'engine'
-                ? 'bg-amber-500/20 text-ivory border border-amber-500/40 shadow-subtle'
-                : 'text-moss-300 hover:text-ivory'
-            }`}
-          >
-            JSON IPC Stdio Protocol
-          </button>
-          <button
-            onClick={() => setActiveArchTab('bounds')}
-            className={`px-4 py-2 rounded-lg text-xs font-mono font-medium transition-all ${
-              activeArchTab === 'bounds'
-                ? 'bg-amber-500/20 text-ivory border border-amber-500/40 shadow-subtle'
-                : 'text-moss-300 hover:text-ivory'
-            }`}
-          >
-            On-Disk $L_\infty$ Verification
-          </button>
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="ghost-card p-6 space-y-2.5 bg-white">
+            <div className="text-xs font-mono font-semibold text-neutral-400">01</div>
+            <h3 className="text-sm font-semibold text-neutral-900">Select Photo</h3>
+            <p className="text-xs text-neutral-500 leading-relaxed">
+              Drop any photo into the browser. The file is held locally in memory and never leaves your device.
+            </p>
+          </div>
 
-        {/* Tab Content Display */}
-        <div className="glass-panel rounded-xl p-6 sm:p-8 border border-fern-700/60 shadow-glossy">
-          {activeArchTab === 'architecture' && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-5 rounded-lg bg-rainforest-850/80 border border-fern-700/60 space-y-3">
-                <div className="flex items-center space-x-2 text-moss">
-                  <Layers className="w-5 h-5" />
-                  <span className="font-semibold text-sm text-ivory">Layer 1: Desktop Shell</span>
-                </div>
-                <p className="text-xs text-ivory-300 leading-relaxed">
-                  Electron 35 + React 19 interface. Never touches raw sockets. Manages non-destructive file dialogs,
-                  real-time image previews, and diagnostic engine health monitoring.
-                </p>
-                <div className="font-mono text-[11px] text-moss-300/80 pt-2 border-t border-fern-800">
-                  TypeScript • CSP Enforced
-                </div>
-              </div>
+          <div className="ghost-card p-6 space-y-2.5 bg-white">
+            <div className="text-xs font-mono font-semibold text-neutral-400">02</div>
+            <h3 className="text-sm font-semibold text-neutral-900">Strip Metadata</h3>
+            <p className="text-xs text-neutral-500 leading-relaxed">
+              GHOSTING inspects all embedded tags, wipes geolocation and camera serials, and normalizes visual EXIF orientation.
+            </p>
+          </div>
 
-              <div className="p-5 rounded-lg bg-rainforest-850/80 border border-fern-700/60 space-y-3">
-                <div className="flex items-center space-x-2 text-amber">
-                  <Terminal className="w-5 h-5" />
-                  <span className="font-semibold text-sm text-ivory">Layer 2: IPC stdio Channel</span>
-                </div>
-                <p className="text-xs text-ivory-300 leading-relaxed">
-                  Zero network ports. Communicates exclusively over child process standard input/output with strict
-                  newline-delimited JSON schemas and process health timeouts.
-                </p>
-                <div className="font-mono text-[11px] text-moss-300/80 pt-2 border-t border-fern-800">
-                  stdio JSON • Zero Network Sockets
-                </div>
-              </div>
-
-              <div className="p-5 rounded-lg bg-rainforest-850/80 border border-fern-700/60 space-y-3">
-                <div className="flex items-center space-x-2 text-fern-400">
-                  <Zap className="w-5 h-5" />
-                  <span className="font-semibold text-sm text-ivory">Layer 3: Python Engine</span>
-                </div>
-                <p className="text-xs text-ivory-300 leading-relaxed">
-                  Python 3.11 + PyTorch. Executes gradient-based Projected Gradient Descent (PGD) optimizations across
-                  perceptual convolutional feature representations (ResNet-18).
-                </p>
-                <div className="font-mono text-[11px] text-moss-300/80 pt-2 border-t border-fern-800">
-                  PyTorch CPU • $L_\infty \le 8/255$
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeArchTab === 'engine' && (
-            <div className="space-y-4">
-              <div className="text-xs text-ivory-300">
-                All engine communication is strictly structured over JSON-RPC-like stdio commands without binding any local HTTP ports:
-              </div>
-              <div className="rounded-lg bg-rainforest-950 p-4 font-mono text-xs text-ivory-300 border border-fern-800 overflow-x-auto">
-                <pre className="text-moss-300">{`// Request sent from Desktop Shell to Python Child Process:
-{
-  "command": "run_perturbation",
-  "image_path": "C:\\\\Users\\\\...\\\\input.png",
-  "adapter_id": "neural-feature-disruption",
-  "strength": 0.03137,  // 8.0 / 255.0 maximum bound
-  "iterations": 10,
-  "seed": 42
-}
-
-// Response from Python Engine (Offline stdio):
-{
-  "status": "success",
-  "output_path": "C:\\\\Users\\\\...\\\\input_veilguard_protected.png",
-  "linf_max_observed": 8.0,
-  "psnr_db": 32.86,
-  "ssim": 0.9964,
-  "execution_seconds": 1.29
-}`}</pre>
-              </div>
-            </div>
-          )}
-
-          {activeArchTab === 'bounds' && (
-            <div className="space-y-4 text-xs text-ivory-300">
-              <p className="leading-relaxed">
-                Rather than trusting memory tensors, VeilGuard implements a secondary on-disk verification step:
-                after the protected image is written to disk as a PNG, the engine re-reads the written file byte-by-byte
-                and computes the absolute maximum pixel difference against the original input.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="p-3 bg-rainforest-950 rounded border border-fern-800">
-                  <div className="text-moss-300 font-mono text-[11px]">Parametric Bound ($\epsilon$)</div>
-                  <div className="text-base font-bold text-ivory font-mono mt-1">8 / 255 (3.14%)</div>
-                </div>
-                <div className="p-3 bg-rainforest-950 rounded border border-fern-800">
-                  <div className="text-moss-300 font-mono text-[11px]">Empirical PSNR</div>
-                  <div className="text-base font-bold text-moss font-mono mt-1">&gt; 32.8 dB</div>
-                </div>
-                <div className="p-3 bg-rainforest-950 rounded border border-fern-800">
-                  <div className="text-moss-300 font-mono text-[11px]">Structural Similarity (SSIM)</div>
-                  <div className="text-base font-bold text-moss font-mono mt-1">0.9964</div>
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="ghost-card p-6 space-y-2.5 bg-white">
+            <div className="text-xs font-mono font-semibold text-neutral-400">03</div>
+            <h3 className="text-sm font-semibold text-neutral-900">Download Clean</h3>
+            <p className="text-xs text-neutral-500 leading-relaxed">
+              Save your sanitized photo with all technical markers removed, ready to share securely anywhere.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* 4. THREE STEP PROCESS */}
-      <section className="max-w-5xl mx-auto px-4 space-y-10">
-        <div className="text-center space-y-3">
-          <h2 className="text-2xl sm:text-3xl font-bold text-ivory tracking-tight">
-            How VeilGuard Operates
+      {/* 3. CORE PRIVACY GUARANTEES */}
+      <section className="max-w-3xl mx-auto px-4 sm:px-6 space-y-8">
+        <div className="text-center space-y-1.5 max-w-md mx-auto">
+          <div className="text-xs uppercase tracking-wider font-semibold text-neutral-400">Architecture</div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight">
+            Designed for Real Privacy
           </h2>
-          <p className="text-sm text-moss-300 max-w-xl mx-auto">
-            A non-destructive, locally verified protection workflow designed for researchers and photographers.
+          <p className="text-xs sm:text-sm text-neutral-500">
+            No accounts. No subscriptions. No cloud servers.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass-card rounded-xl p-6 border-fern-700/60 space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/15 border border-amber-500/35 flex items-center justify-center font-bold text-amber font-mono text-sm">
-              01
-            </div>
-            <h3 className="text-base font-semibold text-ivory">Pre-flight Validation</h3>
-            <p className="text-xs text-ivory-300 leading-relaxed">
-              Verifies input image magic bytes, aspect ratios, and dimension boundaries ($\le 8192 \times 8192$ px).
-              Ensures the original image is treated strictly as read-only.
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="p-5 rounded-xl bg-neutral-50 border border-neutral-200 space-y-2">
+            <h3 className="text-sm font-semibold text-neutral-900">Zero Server Uploads</h3>
+            <p className="text-xs text-neutral-500 leading-relaxed">
+              Every operation takes place directly on your computer or phone using standard client-side Web APIs.
             </p>
           </div>
 
-          <div className="glass-card rounded-xl p-6 border-fern-700/60 space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-moss/15 border border-moss/35 flex items-center justify-center font-bold text-moss font-mono text-sm">
-              02
-            </div>
-            <h3 className="text-base font-semibold text-ivory">Adversarial Optimization</h3>
-            <p className="text-xs text-ivory-300 leading-relaxed">
-              Iterates multi-step PGD gradient ascent on ResNet perceptual feature representations,
-              clamping perturbations within the strict $L_\infty \le 8/255$ hypercube.
+          <div className="p-5 rounded-xl bg-neutral-50 border border-neutral-200 space-y-2">
+            <h3 className="text-sm font-semibold text-neutral-900">Precise GPS Erasure</h3>
+            <p className="text-xs text-neutral-500 leading-relaxed">
+              Smartphones embed latitude and longitude coordinates in every photo. GHOSTING scrubs these tags entirely.
             </p>
           </div>
 
-          <div className="glass-card rounded-xl p-6 border-fern-700/60 space-y-4">
-            <div className="w-10 h-10 rounded-lg bg-fern-500/20 border border-fern-500/35 flex items-center justify-center font-bold text-fern-400 font-mono text-sm">
-              03
-            </div>
-            <h3 className="text-base font-semibold text-ivory">Non-Destructive Export</h3>
-            <p className="text-xs text-ivory-300 leading-relaxed">
-              Exports a new lossless PNG to a user-chosen destination, verifies pixel bounds directly from disk,
-              and generates a reproducible empirical audit log.
+          <div className="p-5 rounded-xl bg-neutral-50 border border-neutral-200 space-y-2">
+            <h3 className="text-sm font-semibold text-neutral-900">Upright Orientation</h3>
+            <p className="text-xs text-neutral-500 leading-relaxed">
+              Handles all 8 EXIF orientation tags so your photos always export upright.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 5. PRIVACY TOOLS TEASER BANNER */}
-      <section className="max-w-5xl mx-auto px-4">
-        <div className="glass-card rounded-xl p-8 bg-gradient-to-r from-rainforest-900/90 via-rainforest-850/90 to-rainforest-900/90 border border-amber-500/35 shadow-glossy">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="space-y-2 text-center md:text-left">
-              <div className="inline-flex items-center space-x-1.5 text-xs text-moss font-mono">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Zero Server Uploads • Pure Client-Side Web Tool</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-ivory">
-                Inspect & Strip Image EXIF Metadata Right Now
-              </h2>
-              <p className="text-xs sm:text-sm text-ivory-300 max-w-xl">
-                Try our browser-local privacy inspector: uncover hidden GPS coordinates, camera serial numbers,
-                and creation timestamps, then strip them completely before sharing.
-              </p>
-            </div>
+      {/* 4. UNDERSTATED BOTTOM SECTION */}
+      <section className="max-w-3xl mx-auto px-4 sm:px-6">
+        <div className="p-8 sm:p-10 rounded-2xl bg-neutral-50 border border-neutral-200 text-center space-y-4">
+          <div className="space-y-1 max-w-sm mx-auto">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-900">
+              Clean your photos in seconds
+            </h2>
+            <p className="text-xs text-neutral-500">
+              No account required. Fast, private, and 100% offline.
+            </p>
+          </div>
+
+          <div>
             <button
               onClick={() => onNavigate('privacy-tools')}
-              className="glass-btn-primary px-6 py-3 rounded-lg font-medium text-sm transition-all flex items-center space-x-2 flex-shrink-0"
+              className="btn-primary px-6 py-2.5 text-xs font-medium space-x-1.5"
             >
               <span>Open Privacy Tools</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -302,3 +242,5 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     </div>
   );
 };
+
+export default HomePage;

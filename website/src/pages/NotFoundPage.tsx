@@ -1,6 +1,7 @@
 import React from 'react';
-import { AlertCircle, Home, Wrench } from 'lucide-react';
+import { Home, ArrowRight } from 'lucide-react';
 import { PageRoute } from '../components/Navbar';
+import { GhostMascot } from '../components/GhostLogo';
 
 interface NotFoundPageProps {
   onNavigate: (page: PageRoute) => void;
@@ -8,28 +9,27 @@ interface NotFoundPageProps {
 
 export const NotFoundPage: React.FC<NotFoundPageProps> = ({ onNavigate }) => {
   return (
-    <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-6">
-      <div className="w-16 h-16 rounded-full bg-navy-900 border border-navy-700 flex items-center justify-center mx-auto text-cyber-amber">
-        <AlertCircle className="w-8 h-8" />
+    <div className="max-w-md mx-auto px-4 py-24 text-center space-y-6">
+      <div className="w-16 h-16 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-center mx-auto">
+        <GhostMascot size={32} />
       </div>
 
       <div className="space-y-2">
-        <div className="text-xs font-mono text-cyber-violet uppercase tracking-wider">
+        <div className="text-xs font-mono text-neutral-400 uppercase tracking-wider font-semibold">
           404 • Page Not Found
         </div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight">
           Resource Does Not Exist
         </h1>
-        <p className="text-sm text-slate-400 leading-relaxed">
-          The requested URL path was not found on the VeilGuard portal.
-          Please select a destination below:
+        <p className="text-sm text-neutral-500 leading-relaxed max-w-sm mx-auto">
+          The requested page could not be located. You can return to the overview or open privacy tools.
         </p>
       </div>
 
-      <div className="pt-4 flex flex-wrap justify-center gap-3">
+      <div className="pt-2 flex flex-wrap justify-center gap-3">
         <button
           onClick={() => onNavigate('home')}
-          className="px-5 py-2.5 rounded-lg bg-cyber-indigo hover:bg-cyber-indigo/90 text-white font-medium text-xs transition-colors flex items-center space-x-1.5"
+          className="btn-primary space-x-1.5 text-xs font-semibold"
         >
           <Home className="w-3.5 h-3.5" />
           <span>Return to Home</span>
@@ -37,12 +37,14 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ onNavigate }) => {
 
         <button
           onClick={() => onNavigate('privacy-tools')}
-          className="px-5 py-2.5 rounded-lg bg-navy-850 hover:bg-navy-800 text-slate-300 border border-navy-700 text-xs font-medium transition-colors flex items-center space-x-1.5"
+          className="btn-secondary space-x-1.5 text-xs font-semibold"
         >
-          <Wrench className="w-3.5 h-3.5 text-slate-400" />
           <span>Open Privacy Tools</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
     </div>
   );
 };
+
+export default NotFoundPage;
