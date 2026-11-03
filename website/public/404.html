@@ -4,23 +4,16 @@
     <meta charset="utf-8">
     <title>VeilGuard — Redirecting...</title>
     <script>
-      // Single Page App redirect for GitHub Pages
-      // Converts path to hash and redirects back to the base URL
-      var path = window.location.pathname;
-      var repo = '/veilguard';
-      if (path.startsWith(repo)) {
-        var subpath = path.slice(repo.length).replace(/^\/+/, '');
-        if (subpath) {
-          window.location.replace(repo + '/#' + subpath + (window.location.search || '') + (window.location.hash || ''));
-        } else {
-          window.location.replace(repo + '/' + (window.location.search || '') + (window.location.hash || ''));
-        }
+      // Single Page App redirect for GitHub Pages custom domain / root path
+      var path = window.location.pathname.replace(/^\/+/, '');
+      if (path && path !== 'index.html') {
+        window.location.replace('/#' + path + (window.location.search || '') + (window.location.hash || ''));
       } else {
-        window.location.replace('/veilguard/');
+        window.location.replace('/' + (window.location.search || '') + (window.location.hash || ''));
       }
     </script>
   </head>
-  <body style="background:#090d16;color:#e2e8f0;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
-    <p>Redirecting to <a href="/veilguard/" style="color:#6366f1;">VeilGuard</a>...</p>
+  <body style="background:#121A14;color:#F2EBDD;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+    <p>Redirecting to <a href="/" style="color:#D6A65D;">VeilGuard</a>...</p>
   </body>
 </html>
