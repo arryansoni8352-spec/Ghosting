@@ -64,6 +64,17 @@ export const VideoStudioPage: React.FC = () => {
   const [metadataReport, setMetadataReport] = useState<VideoMetadataReport | null>(null);
   const [isCleaning, setIsCleaning] = useState(false);
   const [cleanResult, setCleanResult] = useState<VideoCleanResult | null>(null);
+  // One blob URL per cleaned file, revoked when the result changes or the page unmounts
+  const [cleanedDownloadUrl, setCleanedDownloadUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!cleanResult) {
+      setCleanedDownloadUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(cleanResult.cleanedFile);
+    setCleanedDownloadUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [cleanResult]);
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<VideoStudioTab>('inspector');
@@ -629,7 +640,7 @@ export const VideoStudioPage: React.FC = () => {
                           <span>Video Sanitized Successfully ({cleanResult.durationMs}ms)</span>
                         </div>
                         <a
-                          href={URL.createObjectURL(cleanResult.cleanedFile)}
+                          href={cleanedDownloadUrl ?? undefined}
                           download={cleanResult.cleanedFile.name}
                           className="px-3.5 py-1.5 rounded-lg bg-neutral-900 text-white text-xs font-semibold hover:bg-neutral-800 transition-colors flex items-center gap-1.5 shadow-sm"
                         >

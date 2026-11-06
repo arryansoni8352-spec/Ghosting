@@ -501,13 +501,39 @@ export const PrivacyToolsPage: React.FC<PrivacyToolsPageProps> = ({
                 <div className="ghost-card rounded-xl p-6 bg-white border border-neutral-200 space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2 text-neutral-900">
-                      <Check className="w-4 h-4 text-neutral-900" />
-                      <h2 className="font-semibold text-sm">Metadata Stripped Successfully</h2>
+                      {stripResult.verifiedClean ? (
+                        <Check className="w-4 h-4 text-neutral-900" />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4 text-amber-600" />
+                      )}
+                      <h2 className="font-semibold text-sm">
+                        {stripResult.verifiedClean
+                          ? 'No Supported Sensitive Metadata Detected'
+                          : 'Verification Incomplete'}
+                      </h2>
                     </div>
                     <span className="text-xs font-mono text-neutral-600 bg-neutral-50 border border-neutral-200 px-2 py-0.5 rounded">
-                      0 EXIF Tags Remaining
+                      {stripResult.verifiedClean
+                        ? '0 Supported Sensitive Tags'
+                        : stripResult.remainingTagCount > 0
+                        ? `${stripResult.remainingTagCount} Sensitive Tag${stripResult.remainingTagCount === 1 ? '' : 's'} Remaining`
+                        : 'Verification Incomplete'}
                     </span>
                   </div>
+
+                  {stripResult.verifiedClean ? (
+                    <p className="text-xs text-neutral-500">
+                      Verified clean of supported EXIF, GPS, IPTC, XMP, MakerNotes, and Photoshop metadata. Uninspected or proprietary container structures are not evaluated.
+                    </p>
+                  ) : (
+                    <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-start space-x-2">
+                      <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                      <span>
+                        Verification incomplete: We could not verify that all supported sensitive metadata (EXIF, GPS, IPTC, XMP, MakerNotes, Photoshop) was removed from this file. Do not share it until you
+                        have checked it with another tool.
+                      </span>
+                    </div>
+                  )}
 
                   {stripResult.conversionNotice && (
                     <div className="p-3 rounded-lg bg-neutral-50 border border-neutral-200 text-xs text-neutral-700 flex items-start space-x-2">

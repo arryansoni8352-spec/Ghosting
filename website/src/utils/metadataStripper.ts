@@ -117,6 +117,117 @@ export function getOrientationTransform(
   }
 }
 
+// Sensitive privacy-invasive metadata groups checked during post-strip verification:
+// GPS, EXIF (camera/lens), IPTC (creator/copyright), XMP (editing/history),
+// MakerNotes (camera serials/firmware), and Photoshop Document Records.
+//
+// NOTE ON ICC PROFILES AND STRUCTURAL HEADERS:
+// 1. Arbitrary input ICC profiles CAN contain device-specific identifiers, serial numbers,
+//    and author/copyright metadata (e.g., desc, cprt, dmdd tags).
+// 2. In GHOSTING, input images are decoded to raw raster pixels on an HTML5 Canvas, which
+//    completely discards the input ICC profile along with all input container segments.
+//    The original ICC profile is NEVER preserved.
+// 3. When exportCanvasToBlob() encodes the raster canvas, the browser's native encoder
+//    (e.g., Skia/CoreGraphics) may synthesize a generic, standard sRGB color profile
+//    (or standard PNG sRGB chunk / JPEG APP2 marker) to ensure consistent display rendering.
+// 4. Therefore, any 'icc' block detected by ExifReader on the output blob is a newly
+//    synthesized browser-default profile, not remnant user data from the original file.
+//    Excluding 'icc' from SENSITIVE_METADATA_GROUPS prevents false-positive verification
+//    failures on clean canvas exports.
+// 5. Structural markers such as JFIF (APP0) are similarly synthesized by canvas encoders
+//    to specify baseline JPEG decoding dimensions and units (e.g., 72 DPI).
+//
+// NOTE ON VERIFICATION SCOPE:
+// Verification checks for the absence of supported tags in the six configured groups
+// (EXIF, GPS, IPTC, XMP, MakerNotes, and Photoshop). It does not guarantee that
+// uninspected, proprietary, or unknown container chunks are absent.
+export const SENSITIVE_METADATA_GROUPS = [
+  'exif',
+  'gps',
+  'iptc',
+  'xmp',
+  'makernotes',
+  'photoshop',
+] as const;
+
+/**
+ * Recursively counts individual metadata tags within a group or structure,
+ * including nested structures (e.g. XMP structures/namespaces) and arrays (e.g. XMP Bag/Seq).
+ */
+export function countTagsInValue(val: unknown, depth = 0): number {
+  if (!val || typeof val !== 'object' || depth > 10) return 0;
+
+  if (Array.isArray(val)) {
+    let count = 0;
+    for (const item of val) {
+      count += countTagsInValue(item, depth + 1);
+    }
+    return count;
+  }
+
+  const obj = val as Record<string, unknown>;
+
+  // If this tag has a nested object/array as its value (e.g. structured XMP tag),
+  // count the nested fields
+  if ('value' in obj && obj.value && typeof obj.value === 'object') {
+    const nestedCount = countTagsInValue(obj.value, depth + 1);
+    return Math.max(1, nestedCount);
+  }
+
+  // If this is a leaf tag with description or value or id
+  if ('description' in obj || 'value' in obj || 'id' in obj) {
+    return 1;
+  }
+
+  // Otherwise, obj is a container/dictionary of tags
+  let count = 0;
+  for (const [key, child] of Object.entries(obj)) {
+    if (key === '_raw') {
+      continue;
+    }
+    if (child && typeof child === 'object') {
+      count += countTagsInValue(child, depth + 1);
+    } else if (child !== undefined && child !== null) {
+      count += 1;
+    }
+  }
+
+  // If container had only '_raw' (unparsed packet text) and no other parsed tags,
+  // count it as 1 tag so the packet existence is not ignored
+  if (count === 0 && '_raw' in obj && obj._raw) {
+    count = 1;
+  }
+
+  return count;
+}
+
+/**
+ * Counts all remaining tags across the supported sensitive metadata groups.
+ * Handles both lowercase ('makernotes') and camelCase ('makerNotes') property names
+ * without double-counting.
+ */
+export function countSensitiveTags(cleanTags: Record<string, unknown>): number {
+  let totalTags = 0;
+  const inspectedGroups = new Set<string>();
+
+  for (const groupKey of SENSITIVE_METADATA_GROUPS) {
+    let group = cleanTags[groupKey];
+    if (!group && groupKey === 'makernotes') {
+      group = cleanTags['makerNotes'];
+    }
+    if (group && typeof group === 'object' && !inspectedGroups.has(groupKey)) {
+      inspectedGroups.add(groupKey);
+      totalTags += countTagsInValue(group);
+    }
+  }
+
+  return totalTags;
+}
+
+// Large photos on slow phones can take a while to decode. On timeout we fail loudly
+// rather than hand the user a placeholder image that looks like a cleaned photo.
+const DECODE_TIMEOUT_MS = 30_000;
+
 /**
  * Runtime detector that determines whether the browser automatically rotates
  * EXIF orientation when drawing an image via HTMLImageElement into an HTML5 canvas.
@@ -251,25 +362,30 @@ export async function stripImageMetadata(
   const cleanBlob = await renderToCleanBlob(file, cleanMimeType, quality, orientation, rawWidth, rawHeight);
   const cleanUrl = URL.createObjectURL(cleanBlob);
 
-  // 3. Verification step: verify with ExifReader that 0 EXIF/GPS/XMP/IPTC tags remain in the clean blob
+  // 3. Verification step: verify with ExifReader that 0 sensitive metadata tags remain in the clean blob
   let remainingTagCount = 0;
   let verifiedClean = true;
   try {
     const cleanBuffer = await cleanBlob.arrayBuffer();
     const cleanTags = ExifReader.load(cleanBuffer, { expanded: true });
-    // Check if any non-technical/metadata group remains
-    const SENSITIVE_OR_METADATA_GROUPS = ['exif', 'gps', 'iptc', 'xmp', 'icc', 'makernotes', 'photoshop', 'jfif'];
-    const keys = Object.keys(cleanTags).filter(k => {
-      if (!SENSITIVE_OR_METADATA_GROUPS.includes(k.toLowerCase())) return false;
-      const group = (cleanTags as Record<string, unknown>)[k];
-      return group && typeof group === 'object' && Object.keys(group).length > 0;
-    });
-    remainingTagCount = keys.length;
+
+    // Accurately count individual sensitive tags remaining across all supported sensitive groups,
+    // including nested structures and arrays.
+    remainingTagCount = countSensitiveTags(cleanTags as Record<string, unknown>);
     verifiedClean = remainingTagCount === 0;
-  } catch {
-    // Clean canvas exports without headers are verified clean
-    remainingTagCount = 0;
-    verifiedClean = true;
+  } catch (verifyErr) {
+    // ExifReader throws MetadataMissingError when it finds no metadata at all,
+    // which is exactly what a clean canvas export looks like. Any other error
+    // means we could not verify the output, so never claim it is clean.
+    if (
+      (verifyErr as { name?: string } | null)?.name === 'MetadataMissingError' ||
+      (ExifReader.errors?.MetadataMissingError && verifyErr instanceof ExifReader.errors.MetadataMissingError)
+    ) {
+      remainingTagCount = 0;
+      verifiedClean = true;
+    } else {
+      verifiedClean = false;
+    }
   }
 
   // 4. Determine final dimensions
@@ -356,14 +472,23 @@ async function renderToCleanBlob(
     const img = new Image();
     const tempUrl = URL.createObjectURL(file);
 
-    const safetyTimer = setTimeout(() => {
+    let isSettled = false;
+    const cleanup = () => {
+      isSettled = true;
+      clearTimeout(safetyTimer);
+      img.onload = null;
+      img.onerror = null;
       URL.revokeObjectURL(tempUrl);
-      resolve(createCleanImageStubBlob(cleanMimeTypeToExt(mimeType), canvasWidth, canvasHeight));
-    }, 4000);
+    };
+
+    const safetyTimer = setTimeout(() => {
+      cleanup();
+      reject(new Error('Timed out while decoding this image. It may be too large for this device.'));
+    }, DECODE_TIMEOUT_MS);
 
     img.onload = async () => {
-      clearTimeout(safetyTimer);
-      URL.revokeObjectURL(tempUrl);
+      if (isSettled) return;
+      cleanup();
 
       try {
         const rawW = img.naturalWidth || img.width || defaultW;
@@ -374,7 +499,7 @@ async function renderToCleanBlob(
 
         const ctx = canvas.getContext('2d');
         if (!ctx) {
-          resolve(createCleanImageStubBlob(cleanMimeTypeToExt(mimeType), canvasWidth, canvasHeight));
+          reject(new Error('Canvas is unavailable, or this image is too large for this browser.'));
           return;
         }
 
@@ -412,14 +537,14 @@ async function renderToCleanBlob(
 
         const blob = await exportCanvasToBlob(canvas, mimeType, quality);
         resolve(blob);
-      } catch {
-        resolve(createCleanImageStubBlob(cleanMimeTypeToExt(mimeType), canvasWidth, canvasHeight));
+      } catch (err) {
+        reject(err instanceof Error ? err : new Error('Failed to render the cleaned image.'));
       }
     };
 
     img.onerror = () => {
-      clearTimeout(safetyTimer);
-      URL.revokeObjectURL(tempUrl);
+      if (isSettled) return;
+      cleanup();
       reject(new Error('Failed to decode image file. File may be corrupt or an unsupported format.'));
     };
 
@@ -434,22 +559,22 @@ function cleanMimeTypeToExt(mime: string): 'jpeg' | 'png' | 'webp' {
 }
 
 function exportCanvasToBlob(canvas: HTMLCanvasElement, mimeType: string, quality: number): Promise<Blob> {
-  return new Promise(resolve => {
-    if (canvas.toBlob) {
-      canvas.toBlob(
-        blob => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            resolve(createCleanImageStubBlob(cleanMimeTypeToExt(mimeType), canvas.width, canvas.height));
-          }
-        },
-        mimeType,
-        quality
-      );
-    } else {
-      resolve(createCleanImageStubBlob(cleanMimeTypeToExt(mimeType), canvas.width, canvas.height));
+  return new Promise((resolve, reject) => {
+    if (!canvas.toBlob) {
+      reject(new Error('This browser cannot export canvas images.'));
+      return;
     }
+    canvas.toBlob(
+      blob => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error('Could not encode the cleaned image. It may be too large for this browser.'));
+        }
+      },
+      mimeType,
+      quality
+    );
   });
 }
 
