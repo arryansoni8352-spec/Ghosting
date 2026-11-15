@@ -41,7 +41,7 @@ export const SecurityPolicyPage: React.FC<SecurityPolicyPageProps> = ({ onNaviga
             <span>Zero-Exposure Architecture</span>
           </h2>
           <p className="text-xs text-neutral-500 leading-relaxed">
-            GHOSTING enforces strict client-side data isolation. Image binaries loaded into the interface are never serialized over WebSockets, fetch calls, or background channels.
+            In the photo and video privacy tools, GHOSTING enforces strict client-side data isolation: files are never serialized over WebSockets, fetch calls, or background channels. The one exception is the optional AI Shield page, which sends the file you choose to a separate processing server after you confirm a notice (see the Privacy Policy).
           </p>
         </section>
 

@@ -1,0 +1,19 @@
+metric,value,unit,source
+offline_tests_passed,114,count,pytest -m "not model"
+model_tests_passed,32,count,pytest -m model
+tests_failed,0,count,combined
+tests_skipped,0,count,combined
+mobilenet_port_max_abs_error,3.3e-05,activation units (float32),tests/style_shield/test_mobilenet_port.py
+ssim_jax_vs_numpy_max_abs_error,1e-07,SSIM units,tests/style_shield/test_ssim_jax.py
+jpeg_codec_noise_q100_zero_perturbation,29,8-bit levels,docs/STYLE_SHIELD_TECHNICAL_REPORT.md section 9
+webp_lossy_codec_noise_q100_zero_perturbation,30,8-bit levels,docs/STYLE_SHIELD_TECHNICAL_REPORT.md section 9
+low_preset_budget,4,8-bit levels,app/engines/style_shield/optimise.py
+balanced_preset_budget,8,8-bit levels,app/engines/style_shield/optimise.py
+high_preset_budget,16,8-bit levels,app/engines/style_shield/optimise.py
+style_transfer_seconds_per_image_128px,70,seconds (one CPU core),docs/experiments/run_log.txt
+health_endpoint_max_latency_during_processing,1.0,seconds (measured ceiling, actual lower),tests/api/test_concurrency.py
+victim_recognition_rate_clean,1.0,fraction (3 seeds),docs/experiments/style_shield_results.json
+victim_recognition_rate_matched_noise,1.0,fraction (3 seeds),docs/experiments/style_shield_results.json
+victim_recognition_rate_cloaked,1.0,fraction (3 seeds),docs/experiments/style_shield_results.json
+feature_shift_cloak_vs_original,8.31,L2 distance,docs/experiments/style_shield_results.json
+feature_shift_noise_vs_original,1.76,L2 distance,docs/experiments/style_shield_results.json

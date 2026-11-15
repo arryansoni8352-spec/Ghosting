@@ -1,0 +1,1396 @@
+{
+  "generated_utc": "2026-11-06T05:14:38+00:00",
+  "description": "Proxy experiment: a linear probe on frozen MobileNetV1 features, trained on clean, SSIM-matched noise, or cloaked versions of victim A1. Not a generative fine-tuning test. Not Glaze's evaluation.",
+  "environment": {
+    "python": "3.12.3",
+    "jax": "0.12.0.1",
+    "platform": "cpu",
+    "machine": "x86_64"
+  },
+  "model": {
+    "name": "mobilenet_v1_1.0_224_notop_imagenet",
+    "weights_sha256": "9f9cfd8c925431c06ce96744e1d201575f6a681bf38ae2de38e2ae8f7d7829d3",
+    "weights_licence": "UNRESOLVED: checkpoint licence statement not located; distributed through the Apache-2.0 TF-Slim model zoo. Residual uncertainty recorded in docs/STYLE_SHIELD_DESIGN.md."
+  },
+  "settings": {
+    "size": 128,
+    "preset": "balanced",
+    "preset_params": {
+      "name": "balanced",
+      "epsilon": 0.03137254901960784,
+      "steps": 500,
+      "lr": 0.01,
+      "alpha": 2.0,
+      "p_s": 0.05
+    },
+    "transfer_steps": 200,
+    "pilot_override": false,
+    "probe": {
+      "type": "multinomial logistic regression on L2-normalised pooled conv_pw_7_relu",
+      "optimiser": "Adam lr 0.05, 300 full-batch steps, L2 1e-4, init seed = run seed"
+    },
+    "n_train_per_class": 12,
+    "n_test_per_class": 12,
+    "victims": [
+      "A1",
+      "A2",
+      "A3",
+      "A4"
+    ],
+    "protected": "A1",
+    "exemplar_seed": 1000
+  },
+  "per_seed": [
+    {
+      "seed": 0,
+      "target_style": "T8",
+      "target_selection": {
+        "p50": 14.406288146972656,
+        "p75": 14.864143371582031,
+        "eligible": [
+          "T10",
+          "T11",
+          "T8"
+        ]
+      },
+      "target_distances": {
+        "T1": 0.9454661011695862,
+        "T2": 4.372519493103027,
+        "T3": 4.005594730377197,
+        "T4": 13.180390357971191,
+        "T5": 13.542526245117188,
+        "T6": 14.351591110229492,
+        "T7": 15.204264640808105,
+        "T8": 14.768433570861816,
+        "T9": 15.49250602722168,
+        "T10": 14.46098518371582,
+        "T11": 14.517562866210938,
+        "T12": 15.151272773742676
+      },
+      "visual_quality": {
+        "cloak": [
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.05013,
+            "psnr_db": 36.974655,
+            "ssim": 0.899135,
+            "mean_absolute_difference": 2.879679,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.075989,
+            "psnr_db": 36.966058,
+            "ssim": 0.89917,
+            "mean_absolute_difference": 2.879862,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.661865,
+            "psnr_db": 36.775704,
+            "ssim": 0.899364,
+            "mean_absolute_difference": 2.950724,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.071493,
+            "psnr_db": 36.967552,
+            "ssim": 0.899021,
+            "mean_absolute_difference": 2.876302,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.217611,
+            "psnr_db": 36.919274,
+            "ssim": 0.899587,
+            "mean_absolute_difference": 2.893595,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.030518,
+            "psnr_db": 36.981187,
+            "ssim": 0.898996,
+            "mean_absolute_difference": 2.896484,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.092794,
+            "psnr_db": 36.96048,
+            "ssim": 0.899279,
+            "mean_absolute_difference": 2.886251,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.022359,
+            "psnr_db": 36.983907,
+            "ssim": 0.899321,
+            "mean_absolute_difference": 2.868347,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 12.977641,
+            "psnr_db": 36.998846,
+            "ssim": 0.899166,
+            "mean_absolute_difference": 2.858785,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.674154,
+            "psnr_db": 36.771799,
+            "ssim": 0.899171,
+            "mean_absolute_difference": 2.97522,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.440653,
+            "psnr_db": 36.8466,
+            "ssim": 0.899308,
+            "mean_absolute_difference": 2.932353,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.016337,
+            "psnr_db": 36.985916,
+            "ssim": 0.899182,
+            "mean_absolute_difference": 2.867126,
+            "max_abs_difference": 8,
+            "notes": []
+          }
+        ],
+        "noise_control": [
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.562724,
+            "psnr_db": 39.344021,
+            "ssim": 0.899394,
+            "mean_absolute_difference": 2.356832,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.594604,
+            "psnr_db": 39.325752,
+            "ssim": 0.899165,
+            "mean_absolute_difference": 2.361125,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.72408,
+            "psnr_db": 39.252336,
+            "ssim": 0.899614,
+            "mean_absolute_difference": 2.381348,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.70575,
+            "psnr_db": 39.262655,
+            "ssim": 0.89927,
+            "mean_absolute_difference": 2.379089,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.949727,
+            "psnr_db": 39.127281,
+            "ssim": 0.899337,
+            "mean_absolute_difference": 2.416402,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.290222,
+            "psnr_db": 39.503396,
+            "ssim": 0.898647,
+            "mean_absolute_difference": 2.31663,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.336833,
+            "psnr_db": 39.475717,
+            "ssim": 0.899222,
+            "mean_absolute_difference": 2.324178,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.734945,
+            "psnr_db": 39.246231,
+            "ssim": 0.899966,
+            "mean_absolute_difference": 2.382528,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.824178,
+            "psnr_db": 39.196416,
+            "ssim": 0.898807,
+            "mean_absolute_difference": 2.392782,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.615458,
+            "psnr_db": 39.313843,
+            "ssim": 0.899112,
+            "mean_absolute_difference": 2.365255,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.704366,
+            "psnr_db": 39.263435,
+            "ssim": 0.899272,
+            "mean_absolute_difference": 2.38267,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.603882,
+            "psnr_db": 39.32045,
+            "ssim": 0.899104,
+            "mean_absolute_difference": 2.362345,
+            "max_abs_difference": 5,
+            "notes": []
+          }
+        ]
+      },
+      "effectiveness": {
+        "C0_clean": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        },
+        "C1_matched_noise": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        },
+        "C2_style_shield": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        }
+      },
+      "feature_shift": {
+        "C2_cloak_vs_original_mean_l2": 8.080486933390299,
+        "C1_noise_vs_original_mean_l2": 1.790060003598531
+      },
+      "cloak_ssim_mean": 0.8992248601825308,
+      "seconds": 763.2
+    },
+    {
+      "seed": 1,
+      "target_style": "T11",
+      "target_selection": {
+        "p50": 14.124815940856934,
+        "p75": 14.942214965820312,
+        "eligible": [
+          "T10",
+          "T11",
+          "T8"
+        ]
+      },
+      "target_distances": {
+        "T1": 1.1716039180755615,
+        "T2": 4.299307823181152,
+        "T3": 3.968414545059204,
+        "T4": 12.462518692016602,
+        "T5": 12.646931648254395,
+        "T6": 13.894425392150879,
+        "T7": 15.441022872924805,
+        "T8": 14.881362915039062,
+        "T9": 15.672130584716797,
+        "T10": 14.483884811401367,
+        "T11": 14.355206489562988,
+        "T12": 15.124771118164062
+      },
+      "visual_quality": {
+        "cloak": [
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 14.199646,
+            "psnr_db": 36.608028,
+            "ssim": 0.89873,
+            "mean_absolute_difference": 3.036926,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.608419,
+            "psnr_db": 36.792727,
+            "ssim": 0.898772,
+            "mean_absolute_difference": 2.966085,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.751668,
+            "psnr_db": 36.74725,
+            "ssim": 0.898791,
+            "mean_absolute_difference": 2.983521,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.368591,
+            "psnr_db": 36.869947,
+            "ssim": 0.898947,
+            "mean_absolute_difference": 2.937398,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.91571,
+            "psnr_db": 36.69575,
+            "ssim": 0.898967,
+            "mean_absolute_difference": 3.003723,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.67511,
+            "psnr_db": 36.771495,
+            "ssim": 0.899314,
+            "mean_absolute_difference": 2.967997,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.691284,
+            "psnr_db": 36.766362,
+            "ssim": 0.898939,
+            "mean_absolute_difference": 2.972412,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.197693,
+            "psnr_db": 36.925823,
+            "ssim": 0.898999,
+            "mean_absolute_difference": 2.90745,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.879679,
+            "psnr_db": 36.707009,
+            "ssim": 0.898856,
+            "mean_absolute_difference": 2.997477,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.59259,
+            "psnr_db": 36.797781,
+            "ssim": 0.898818,
+            "mean_absolute_difference": 2.974915,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.716125,
+            "psnr_db": 36.758489,
+            "ssim": 0.898898,
+            "mean_absolute_difference": 2.967712,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.80955,
+            "psnr_db": 36.729008,
+            "ssim": 0.899429,
+            "mean_absolute_difference": 2.994486,
+            "max_abs_difference": 8,
+            "notes": []
+          }
+        ],
+        "noise_control": [
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.806885,
+            "psnr_db": 39.206026,
+            "ssim": 0.898819,
+            "mean_absolute_difference": 2.392904,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.695821,
+            "psnr_db": 39.268254,
+            "ssim": 0.898657,
+            "mean_absolute_difference": 2.382141,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.862773,
+            "psnr_db": 39.175046,
+            "ssim": 0.898646,
+            "mean_absolute_difference": 2.400085,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.441772,
+            "psnr_db": 39.41404,
+            "ssim": 0.898677,
+            "mean_absolute_difference": 2.337321,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.767598,
+            "psnr_db": 39.227936,
+            "ssim": 0.899173,
+            "mean_absolute_difference": 2.394145,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.548991,
+            "psnr_db": 39.351915,
+            "ssim": 0.899358,
+            "mean_absolute_difference": 2.357707,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.783407,
+            "psnr_db": 39.219106,
+            "ssim": 0.898967,
+            "mean_absolute_difference": 2.394206,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.295471,
+            "psnr_db": 39.50027,
+            "ssim": 0.898933,
+            "mean_absolute_difference": 2.316589,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.715251,
+            "psnr_db": 39.257303,
+            "ssim": 0.89933,
+            "mean_absolute_difference": 2.380371,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.510783,
+            "psnr_db": 39.373952,
+            "ssim": 0.898457,
+            "mean_absolute_difference": 2.351847,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.397339,
+            "psnr_db": 39.440048,
+            "ssim": 0.898928,
+            "mean_absolute_difference": 2.330037,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.730957,
+            "psnr_db": 39.248471,
+            "ssim": 0.899304,
+            "mean_absolute_difference": 2.383667,
+            "max_abs_difference": 5,
+            "notes": []
+          }
+        ]
+      },
+      "effectiveness": {
+        "C0_clean": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        },
+        "C1_matched_noise": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        },
+        "C2_style_shield": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        }
+      },
+      "feature_shift": {
+        "C2_cloak_vs_original_mean_l2": 8.758193651835123,
+        "C1_noise_vs_original_mean_l2": 1.7445902327696483
+      },
+      "cloak_ssim_mean": 0.8989550142931798,
+      "seconds": 754.1
+    },
+    {
+      "seed": 2,
+      "target_style": "T8",
+      "target_selection": {
+        "p50": 13.994534015655518,
+        "p75": 14.735305309295654,
+        "eligible": [
+          "T10",
+          "T11",
+          "T8"
+        ]
+      },
+      "target_distances": {
+        "T1": 0.8974484205245972,
+        "T2": 4.516141414642334,
+        "T3": 4.0135345458984375,
+        "T4": 12.373995780944824,
+        "T5": 12.705300331115723,
+        "T6": 13.573487281799316,
+        "T7": 15.104598999023438,
+        "T8": 14.612207412719727,
+        "T9": 15.105538368225098,
+        "T10": 14.513345718383789,
+        "T11": 14.415580749511719,
+        "T12": 15.144740104675293
+      },
+      "visual_quality": {
+        "cloak": [
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.746379,
+            "psnr_db": 36.748921,
+            "ssim": 0.899208,
+            "mean_absolute_difference": 2.983317,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.439819,
+            "psnr_db": 36.846869,
+            "ssim": 0.899307,
+            "mean_absolute_difference": 2.926717,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.44342,
+            "psnr_db": 36.845706,
+            "ssim": 0.899013,
+            "mean_absolute_difference": 2.936544,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.226501,
+            "psnr_db": 36.916354,
+            "ssim": 0.899111,
+            "mean_absolute_difference": 2.907084,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 12.759115,
+            "psnr_db": 37.072598,
+            "ssim": 0.899178,
+            "mean_absolute_difference": 2.837158,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.4446,
+            "psnr_db": 36.845325,
+            "ssim": 0.899366,
+            "mean_absolute_difference": 2.924866,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.261047,
+            "psnr_db": 36.905025,
+            "ssim": 0.89901,
+            "mean_absolute_difference": 2.901998,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.512065,
+            "psnr_db": 36.823586,
+            "ssim": 0.899037,
+            "mean_absolute_difference": 2.952576,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 12.892802,
+            "psnr_db": 37.027331,
+            "ssim": 0.899456,
+            "mean_absolute_difference": 2.86086,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 12.662313,
+            "psnr_db": 37.105673,
+            "ssim": 0.899142,
+            "mean_absolute_difference": 2.848836,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.165263,
+            "psnr_db": 36.936508,
+            "ssim": 0.899227,
+            "mean_absolute_difference": 2.895203,
+            "max_abs_difference": 8,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 13.162455,
+            "psnr_db": 36.937435,
+            "ssim": 0.899331,
+            "mean_absolute_difference": 2.889954,
+            "max_abs_difference": 8,
+            "notes": []
+          }
+        ],
+        "noise_control": [
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.613973,
+            "psnr_db": 39.31469,
+            "ssim": 0.899093,
+            "mean_absolute_difference": 2.366414,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.833842,
+            "psnr_db": 39.191056,
+            "ssim": 0.899323,
+            "mean_absolute_difference": 2.398783,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.938639,
+            "psnr_db": 39.133343,
+            "ssim": 0.898525,
+            "mean_absolute_difference": 2.4139,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.698059,
+            "psnr_db": 39.266991,
+            "ssim": 0.899417,
+            "mean_absolute_difference": 2.377665,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.581055,
+            "psnr_db": 39.333507,
+            "ssim": 0.899114,
+            "mean_absolute_difference": 2.36259,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 8.01884,
+            "psnr_db": 39.089688,
+            "ssim": 0.899041,
+            "mean_absolute_difference": 2.427246,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.599874,
+            "psnr_db": 39.32274,
+            "ssim": 0.899114,
+            "mean_absolute_difference": 2.366475,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.78656,
+            "psnr_db": 39.217347,
+            "ssim": 0.899267,
+            "mean_absolute_difference": 2.396342,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.631755,
+            "psnr_db": 39.30456,
+            "ssim": 0.899746,
+            "mean_absolute_difference": 2.367554,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.231873,
+            "psnr_db": 39.538296,
+            "ssim": 0.899151,
+            "mean_absolute_difference": 2.305684,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.699605,
+            "psnr_db": 39.266119,
+            "ssim": 0.899338,
+            "mean_absolute_difference": 2.381897,
+            "max_abs_difference": 5,
+            "notes": []
+          },
+          {
+            "width": 128,
+            "height": 128,
+            "channels": 3,
+            "original_bytes": 0,
+            "derived_bytes": 0,
+            "size_ratio": NaN,
+            "mse": 7.634338,
+            "psnr_db": 39.30309,
+            "ssim": 0.899445,
+            "mean_absolute_difference": 2.372457,
+            "max_abs_difference": 5,
+            "notes": []
+          }
+        ]
+      },
+      "effectiveness": {
+        "C0_clean": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        },
+        "C1_matched_noise": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        },
+        "C2_style_shield": {
+          "victim_recognition_rate": 1.0,
+          "victim_to_any_other_rate": 0.0,
+          "overall_test_accuracy": 1.0,
+          "per_class_test_accuracy": {
+            "A1": 1.0,
+            "A2": 1.0,
+            "A3": 1.0,
+            "A4": 1.0
+          }
+        }
+      },
+      "feature_shift": {
+        "C2_cloak_vs_original_mean_l2": 8.087476054827372,
+        "C1_noise_vs_original_mean_l2": 1.7494082550207775
+      },
+      "cloak_ssim_mean": 0.8991988135049853,
+      "seconds": 756.9
+    }
+  ],
+  "summary": {
+    "effectiveness": {
+      "C0_clean": {
+        "victim_recognition_rate": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n_seeds": 3
+        },
+        "victim_to_any_other_rate": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n_seeds": 3
+        },
+        "overall_test_accuracy": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n_seeds": 3
+        }
+      },
+      "C1_matched_noise": {
+        "victim_recognition_rate": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n_seeds": 3
+        },
+        "victim_to_any_other_rate": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n_seeds": 3
+        },
+        "overall_test_accuracy": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n_seeds": 3
+        }
+      },
+      "C2_style_shield": {
+        "victim_recognition_rate": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n_seeds": 3
+        },
+        "victim_to_any_other_rate": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "n_seeds": 3
+        },
+        "overall_test_accuracy": {
+          "mean": 1.0,
+          "min": 1.0,
+          "max": 1.0,
+          "n_seeds": 3
+        }
+      }
+    },
+    "visual_quality": {
+      "cloak": {
+        "ssim": {
+          "mean": 0.8991262777777776,
+          "min": 0.8989550000000001,
+          "max": 0.8992249999999999,
+          "n_seeds": 3
+        },
+        "mean_absolute_difference": {
+          "mean": 2.9261095277777778,
+          "min": 2.897060666666667,
+          "max": 2.9758418333333334,
+          "n_seeds": 3
+        },
+        "max_abs_difference": {
+          "mean": 8.0,
+          "min": 8.0,
+          "max": 8.0,
+          "n_seeds": 3
+        }
+      },
+      "noise_control": {
+        "ssim": {
+          "mean": 0.8991314722222222,
+          "min": 0.8989374166666667,
+          "max": 0.8992425000000001,
+          "n_seeds": 3
+        },
+        "mean_absolute_difference": {
+          "mean": 2.37164475,
+          "min": 2.3684183333333335,
+          "max": 2.3780839166666663,
+          "n_seeds": 3
+        },
+        "max_abs_difference": {
+          "mean": 5.0,
+          "min": 5.0,
+          "max": 5.0,
+          "n_seeds": 3
+        }
+      }
+    },
+    "feature_shift": {
+      "C2_cloak_vs_original_mean_l2": {
+        "mean": 8.308718880017599,
+        "min": 8.080486933390299,
+        "max": 8.758193651835123,
+        "n_seeds": 3
+      },
+      "C1_noise_vs_original_mean_l2": {
+        "mean": 1.7613528304629857,
+        "min": 1.7445902327696483,
+        "max": 1.790060003598531,
+        "n_seeds": 3
+      }
+    }
+  },
+  "total_seconds": 2274.2
+}

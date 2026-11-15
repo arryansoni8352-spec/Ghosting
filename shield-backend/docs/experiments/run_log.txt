@@ -1,0 +1,11 @@
+seed 0
+  seed 0: target T8, eligible ['T10', 'T11', 'T8']
+    cloaked 12 images: transfer 161s, cloak 594s
+seed 1
+  seed 1: target T11, eligible ['T10', 'T11', 'T8']
+    cloaked 12 images: transfer 155s, cloak 591s
+seed 2
+  seed 2: target T8, eligible ['T10', 'T11', 'T8']
+    cloaked 12 images: transfer 158s, cloak 592s
+wrote docs/experiments/style_shield_results.json in 2274.2s
+EXPERIMENT_EXIT=0

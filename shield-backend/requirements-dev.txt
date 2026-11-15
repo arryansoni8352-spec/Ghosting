@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest>=8.0
+httpx>=0.27
+# Dev-only: independent SSIM reference for cross-check tests (BSD-3-Clause).
+scikit-image>=0.22

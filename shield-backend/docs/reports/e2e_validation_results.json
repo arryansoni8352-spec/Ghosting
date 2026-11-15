@@ -1,0 +1,140 @@
+[
+  {
+    "case": "png->png (RGB)",
+    "submit_status": 202,
+    "final_state": "succeeded",
+    "output_status": 200,
+    "output_mime": "image/png",
+    "output_format_actual": "PNG",
+    "output_mode": "RGB",
+    "output_size": [
+      64,
+      64
+    ],
+    "input_size": [
+      64,
+      64
+    ],
+    "budget_m": 4,
+    "max_change_after_encoding": 0,
+    "alpha_preserved": null,
+    "within_budget": true,
+    "cleaned_up": true
+  },
+  {
+    "case": "png->png (L)",
+    "submit_status": 202,
+    "final_state": "succeeded",
+    "output_status": 200,
+    "output_mime": "image/png",
+    "output_format_actual": "PNG",
+    "output_mode": "L",
+    "output_size": [
+      64,
+      64
+    ],
+    "input_size": [
+      64,
+      64
+    ],
+    "budget_m": 4,
+    "max_change_after_encoding": 0,
+    "alpha_preserved": null,
+    "within_budget": true,
+    "cleaned_up": true
+  },
+  {
+    "case": "png->png (RGBA_mixed)",
+    "submit_status": 202,
+    "final_state": "succeeded",
+    "output_status": 200,
+    "output_mime": "image/png",
+    "output_format_actual": "PNG",
+    "output_mode": "RGBA",
+    "output_size": [
+      64,
+      64
+    ],
+    "input_size": [
+      64,
+      64
+    ],
+    "budget_m": 4,
+    "max_change_after_encoding": 0,
+    "alpha_preserved": true,
+    "within_budget": true,
+    "cleaned_up": true
+  },
+  {
+    "case": "png->png (RGBA_transparent)",
+    "submit_status": 202,
+    "final_state": "succeeded",
+    "output_status": 200,
+    "output_mime": "image/png",
+    "output_format_actual": "PNG",
+    "output_mode": "RGBA",
+    "output_size": [
+      64,
+      64
+    ],
+    "input_size": [
+      64,
+      64
+    ],
+    "budget_m": 4,
+    "max_change_after_encoding": 0,
+    "alpha_preserved": true,
+    "within_budget": true,
+    "cleaned_up": true
+  },
+  {
+    "case": "jpeg->jpeg (RGB)",
+    "submit_status": 202,
+    "final_state": "failed",
+    "error": {
+      "code": "budget_unsatisfiable",
+      "message": "The jpeg codec alone changes pixels by up to 11 of 255 levels at quality 92, before any perturbation is added. The 'low' preset's budget is 4 levels, so it cannot be met. Use a higher quality, choose png, or set webp_lossless=true."
+    },
+    "cleaned_up": true
+  },
+  {
+    "case": "jpeg->jpeg (L)",
+    "submit_status": 202,
+    "final_state": "failed",
+    "error": {
+      "code": "budget_unsatisfiable",
+      "message": "The jpeg codec alone changes pixels by up to 5 of 255 levels at quality 92, before any perturbation is added. The 'low' preset's budget is 4 levels, so it cannot be met. Use a higher quality, choose png, or set webp_lossless=true."
+    },
+    "cleaned_up": true
+  },
+  {
+    "case": "webp->webp (RGB)",
+    "submit_status": 202,
+    "final_state": "failed",
+    "error": {
+      "code": "budget_unsatisfiable",
+      "message": "The webp codec alone changes pixels by up to 15 of 255 levels at quality 92, before any perturbation is added. The 'low' preset's budget is 4 levels, so it cannot be met. Use a higher quality, choose png, or set webp_lossless=true."
+    },
+    "cleaned_up": true
+  },
+  {
+    "case": "webp->webp (RGBA_mixed)",
+    "submit_status": 202,
+    "final_state": "failed",
+    "error": {
+      "code": "budget_unsatisfiable",
+      "message": "The webp codec alone changes pixels by up to 14 of 255 levels at quality 92, before any perturbation is added. The 'low' preset's budget is 4 levels, so it cannot be met. Use a higher quality, choose png, or set webp_lossless=true."
+    },
+    "cleaned_up": true
+  },
+  {
+    "case": "webp->webp (L)",
+    "submit_status": 202,
+    "final_state": "failed",
+    "error": {
+      "code": "budget_unsatisfiable",
+      "message": "The webp codec alone changes pixels by up to 6 of 255 levels at quality 92, before any perturbation is added. The 'low' preset's budget is 4 levels, so it cannot be met. Use a higher quality, choose png, or set webp_lossless=true."
+    },
+    "cleaned_up": true
+  }
+]

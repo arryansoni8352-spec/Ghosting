@@ -1,0 +1,13 @@
+[project]
+name = "ghosting-shield"
+version = "0.1.0"
+description = "Standalone adversarial image-protection service (Face Shield and Style Shield)."
+requires-python = ">=3.10"
+license = { text = "Proprietary - all rights reserved (set by owner)" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "model: requires verified Style Shield model weights (run with -m model)",
+]

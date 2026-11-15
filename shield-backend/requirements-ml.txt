@@ -1,0 +1,8 @@
+# Optional ML stack for Style Shield (JAX, CPU wheel). Installed in the development environment.
+# JAX CPU wheels are small (~80 MB) and have no CUDA dependency.
+# GPU: see https://docs.jax.dev/en/latest/installation.html (e.g. jax[cuda12]); not tested here.
+# PyTorch was evaluated and rejected for this environment: its Linux wheels require ~2.5 GB of
+# CUDA libraries at import time, even for CPU use, which did not fit the available disk.
+jax>=0.4.30
+jaxlib>=0.4.30
+h5py>=3.10

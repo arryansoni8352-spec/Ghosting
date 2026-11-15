@@ -42,7 +42,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
           <div className="p-4 rounded-lg bg-neutral-50 border border-neutral-200 space-y-1.5">
             <div className="font-semibold text-neutral-900 text-xs">1. Absolute Local Privacy</div>
             <p className="leading-relaxed text-neutral-500">
-              Photographs never leave your device. All processing occurs 100% inside your local browser memory.
+              In the privacy tools, photographs never leave your device: all processing occurs inside your local browser memory. The optional, experimental AI Shield is the one exception and uploads files to a server.
             </p>
           </div>
 
@@ -95,7 +95,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <span>100% Client-Side Execution</span>
             </div>
             <p className="text-xs text-neutral-500 leading-relaxed">
-              No server processing, no cloud accounts, and zero bytes uploaded over the internet.
+              The privacy tools use no server processing, no cloud accounts, and upload zero bytes. (AI Shield is separate and does upload files; it is clearly labelled and asks first.)
             </p>
           </div>
         </div>

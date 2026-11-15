@@ -1,0 +1,60 @@
+GHOSTING Shield — Phase 3 Backup: Excluded Files and Reasons
+==============================================================
+
+1. .venv/  (~743 MB)
+   Python virtual environment. Entirely rebuildable from requirements.txt,
+   requirements-dev.txt, requirements-ml.txt (included in this backup). Not
+   project source; excluded to keep the backup small and portable across
+   environments (a venv built on one machine is not generally reusable on
+   another).
+
+2. __pycache__/  (all locations: app/, app/*/, scripts/, tests/, tests/*/)
+   ~80 KB total. Compiled bytecode cache, regenerated automatically on next
+   run. Not source, not meaningful to preserve.
+
+3. .pytest_cache/  (~44 KB)
+   pytest's own run cache (last-failed tests, etc). Not source, safe to
+   discard and regenerate.
+
+4. models/  (~20 MB: mobilenet_1_0_224_tf_no_top.h5, squeezenet_v1.1_notop_imagenet.h5)
+   Downloaded pretrained model weights. EXCLUDED PER EXPLICIT INSTRUCTION
+   (not required, and MobileNetV1's checkpoint licence is still unresolved
+   per docs/MODEL_LICENSING_REPORT.md — bundling unverified-licence weights
+   is avoided throughout this project).
+   RETRIEVAL AND VERIFICATION PROCESS (fully automated, see
+   app/engines/style_shield/weights.py):
+     - Run: python -m app.cli check-models --download
+     - Or: any model-dependent test / the engine itself calls
+       ensure_weights(), which downloads from a PINNED URL with a connect
+       timeout (15s), a read timeout (30s), an overall deadline (300s), and
+       a byte cap (105% of the declared size), writes to a temp file, then
+       verifies SHA-256 BEFORE an atomic rename into models/. A checksum
+       mismatch deletes the temp file and raises WeightIntegrityError; the
+       weight is never silently substituted or left in a partial state.
+     - Registered checksums and sources (from weights.py):
+         mobilenet_1_0_224_tf_no_top.h5
+           SHA-256: 9f9cfd8c925431c06ce96744e1d201575f6a681bf38ae2de38e2ae8f7d7829d3
+           Source:  https://github.com/fchollet/deep-learning-models/releases/download/v0.6/mobilenet_1_0_224_tf_no_top.h5
+         squeezenet_v1.1_notop_imagenet.h5
+           SHA-256: 2d935d8c102ad1232484a77da8e6fbdf3ff4ab608974a0d8b6283115ffff204f
+           Source:  https://github.com/rcmalli/keras-squeezenet/releases/download/v1.0/squeezenet_weights_tf_dim_ordering_tf_kernels_notop.h5
+     - Full licence findings for both: docs/MODEL_LICENSING_REPORT.md
+       (included in this backup).
+
+5. docs/experiments/independent_eval_log.txt  (58 bytes)
+   Log from the Phase 3 independent-evaluation experiment that was launched
+   twice and interrupted both times by environment resets before completing
+   even its first preset. Contains one line of progress output and NO
+   results of any kind. Excluded as stale/uninformative, not because it's
+   sensitive — it is reproducible by rerunning the documented command in
+   README.md / STYLE_SHIELD_DESIGN.md section 10.3.
+   NOTE: docs/experiments/run_log.txt and docs/experiments/style_shield_results.json
+   are DIFFERENT files, from the EARLIER (completed) Phase 3 experiment, and
+   ARE included — they contain real, finished results referenced by
+   docs/STYLE_SHIELD_TECHNICAL_REPORT.md.
+
+Nothing else was excluded. All source code, tests, documentation, scripts,
+configuration files, and the one required reference fixture
+(tests/fixtures/*.npz, *.h5-independent NumPy-verified SqueezeNet/MobileNet
+activation references — these are small .npz files, not model weights, and
+ARE included) are in the backup.

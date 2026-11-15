@@ -4,6 +4,7 @@ import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
 import { PrivacyToolsPage } from './pages/PrivacyToolsPage';
 import { VideoStudioPage } from './pages/VideoStudioPage';
+import { AIShieldPage } from './pages/AIShieldPage';
 import { AboutPage } from './pages/AboutPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { SecurityPolicyPage } from './pages/SecurityPolicyPage';
@@ -15,6 +16,7 @@ export const App: React.FC = () => {
     if (!hash || hash === 'home') return 'home';
     if (hash === 'privacy-tools' || hash === 'tools' || hash === 'cleaner') return 'privacy-tools';
     if (hash === 'video-studio' || hash === 'video' || hash === 'video-cleaner') return 'video-studio';
+    if (hash === 'ai-shield' || hash === 'shield' || hash === 'aishield') return 'ai-shield';
     if (hash === 'about' || hash === 'project') return 'about';
     if (hash === 'privacy' || hash === 'privacy-policy') return 'privacy';
     if (hash === 'security') return 'security';
@@ -56,6 +58,7 @@ export const App: React.FC = () => {
       home: 'GHOSTING — Minimalist Image Privacy & Metadata Sanitization',
       'privacy-tools': 'Photo Privacy & EXIF Sanitizer — GHOSTING',
       'video-studio': 'Video Privacy & Protection Studio — GHOSTING',
+      'ai-shield': 'AI Shield (Experimental) — GHOSTING',
       about: 'About Mission & Principles — GHOSTING',
       privacy: 'Privacy Policy — GHOSTING',
       security: 'Security Policy & Reporting — GHOSTING',
@@ -82,6 +85,7 @@ export const App: React.FC = () => {
           />
         )}
         {currentPage === 'video-studio' && <VideoStudioPage />}
+        {currentPage === 'ai-shield' && <AIShieldPage onNavigate={navigateTo} />}
         {currentPage === 'about' && <AboutPage onNavigate={navigateTo} />}
         {currentPage === 'privacy' && <PrivacyPolicyPage onNavigate={navigateTo} />}
         {currentPage === 'security' && <SecurityPolicyPage onNavigate={navigateTo} />}

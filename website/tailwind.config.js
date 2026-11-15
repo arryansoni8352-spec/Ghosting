@@ -32,6 +32,14 @@ export default {
           hover: '#F3F4F6',
           white: '#FFFFFF',
         },
+        // Subtle mint accent used only by AI Shield highlights
+        mint: {
+          50: '#F1FBF8',
+          100: '#DDF5EE',
+          300: '#8EDFCB',
+          500: '#3FBFA3',
+          700: '#1E7F6A',
+        },
         accent: {
           DEFAULT: '#171717',
           hover: '#333333',

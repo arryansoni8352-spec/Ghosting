@@ -18,7 +18,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               Minimalist photo privacy. Strip hidden metadata, GPS tags, and camera serial numbers directly in your browser.
             </p>
             <div className="text-xs text-neutral-400">
-              Zero network transmissions • 100% Client-side execution
+              Privacy tools: zero network transmissions, 100% client-side • AI Shield is the one opt-in feature that uploads files to a server
             </div>
           </div>
 

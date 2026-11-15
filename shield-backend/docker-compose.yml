@@ -1,0 +1,18 @@
+# Local/staging convenience. Production hosting notes: docs/ai-shield/GHOSTING_AI_SHIELD_DEPLOYMENT.md
+services:
+  shield:
+    build: .
+    image: ghosting-shield:local
+    env_file: .env                 # copy .env.example to .env first; never commit .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./models:/app/models:ro    # verified weights, supplied by the operator (not in git, not in the image)
+    tmpfs:
+      - /data:size=2g,uid=10001    # job files live in RAM-backed temp storage and vanish on restart
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 4g
+    cpus: 2
+    restart: unless-stopped
