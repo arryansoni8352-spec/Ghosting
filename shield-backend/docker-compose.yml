@@ -3,9 +3,10 @@ services:
   shield:
     build: .
     image: ghosting-shield:local
-    env_file: .env                 # copy .env.example to .env first; never commit .env
+    env_file: .env
+    # SHIELD_FORWARDED_ALLOW_IPS must be set in .env to your reverse-proxy IP.                 # copy .env.example to .env first; never commit .env
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - ./models:/app/models:ro    # verified weights, supplied by the operator (not in git, not in the image)
     tmpfs:

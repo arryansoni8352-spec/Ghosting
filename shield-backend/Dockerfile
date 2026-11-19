@@ -14,6 +14,7 @@ RUN pip install -r requirements.txt -r requirements-ml.txt -r requirements-video
 
 COPY app ./app
 COPY pyproject.toml ./
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # Model weights are NOT baked into the image (licence unresolved). Mount verified weights at /app/models.
 RUN mkdir -p /app/models /data/jobs && chown -R shield:shield /app/models /data
@@ -24,10 +25,11 @@ ENV SHIELD_JOB_DIR=/data/jobs \
     SHIELD_ALLOW_WEIGHT_DOWNLOAD=false
 
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
   CMD python -c "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=4).status == 200 else 1)"
 
 # --workers 1: the in-memory job manager is not shared across processes (see docs).
 # --no-access-log: request lines (job ids, client addresses) are not written by the application.
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1", \
-     "--no-access-log", "--proxy-headers", "--forwarded-allow-ips", "*"]
+# SHIELD_FORWARDED_ALLOW_IPS: set to your reverse-proxy IP/CIDR. Never use *. Leave unset to
+# disable proxy-header trust entirely (safest default for direct exposure).
+ENTRYPOINT ["/docker-entrypoint.sh"]
