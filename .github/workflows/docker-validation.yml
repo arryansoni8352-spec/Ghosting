@@ -1,0 +1,345 @@
+name: Docker Staging Validation
+
+on:
+  push:
+    branches:
+      - feature/ai-shield-staging
+    paths:
+      - 'shield-backend/**'
+      - '.github/workflows/docker-validation.yml'
+  workflow_dispatch:
+    # Note: GitHub requires a workflow to exist on the default branch (main) before
+    # workflow_dispatch can be triggered manually in the web UI. It is retained here
+    # for manual execution once merged, while the push trigger above handles staging validation.
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docker-validation:
+    name: Build & Validate Backend Container
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Inspect Build Context
+        run: |
+          echo "=== Build Context Files ==="
+          ls -la shield-backend/
+          echo "Checking entrypoint permissions..."
+          if ! test -x shield-backend/docker-entrypoint.sh; then
+            echo "ERROR: shield-backend/docker-entrypoint.sh is not executable in the git checkout!" >&2
+            echo "       The entrypoint must be committed with executable permissions (mode 100755) in git." >&2
+            echo "       Fix with: git update-index --chmod=+x shield-backend/docker-entrypoint.sh" >&2
+            exit 1
+          fi
+          echo "PASS: Entrypoint script is executable."
+
+      - name: Build Backend Docker Image
+        run: |
+          echo "Building ghosting-shield:staging image from shield-backend/Dockerfile..."
+          docker build -t ghosting-shield:staging ./shield-backend
+          echo "Image built successfully."
+          docker images ghosting-shield:staging
+
+      - name: Security Check - Non-Root User & Environment
+        run: |
+          echo "Checking container default user (must not be root)..."
+          USER_NAME=$(docker run --rm --entrypoint whoami ghosting-shield:staging)
+          USER_ID=$(docker run --rm --entrypoint id ghosting-shield:staging -u)
+          echo "Container user: $USER_NAME (UID: $USER_ID)"
+          if [ "$USER_NAME" = "root" ] || [ "$USER_ID" = "0" ]; then
+            echo "SECURITY FAILURE: Container is running as root!"
+            exit 1
+          fi
+          echo "PASS: Container runs as unprivileged user: $USER_NAME ($USER_ID)"
+
+      - name: Security Check - Wildcard Proxy Configuration Rejected
+        run: |
+          echo "Testing SHIELD_FORWARDED_ALLOW_IPS='*' rejection..."
+          set +e
+          PROXY_OUTPUT=$(docker run --rm -e SHIELD_FORWARDED_ALLOW_IPS="*" ghosting-shield:staging 2>&1)
+          PROXY_EXIT=$?
+          set -e
+
+          echo "Container exit status: $PROXY_EXIT"
+          echo "Container output:"
+          echo "$PROXY_OUTPUT"
+
+          if [ $PROXY_EXIT -eq 0 ]; then
+            echo "SECURITY FAILURE: Container accepted wildcard proxy setting (exited 0)!"
+            exit 1
+          fi
+
+          EXPECTED_MSG="ERROR: SHIELD_FORWARDED_ALLOW_IPS='*' is not permitted."
+          if ! echo "$PROXY_OUTPUT" | grep -Fq "$EXPECTED_MSG"; then
+            echo "SECURITY FAILURE: Container failed, but did not produce expected rejection message!"
+            echo "Expected: $EXPECTED_MSG"
+            exit 1
+          fi
+          echo "PASS: Wildcard proxy configuration was rejected with exit code $PROXY_EXIT and expected message."
+
+      - name: Production Auth Gate 1 - Refuse Disabled Auth
+        run: |
+          echo "Testing production startup with SHIELD_AUTH_MODE=disabled (must refuse)..."
+          set +e
+          AUTH_DIS_OUTPUT=$(docker run --rm -e SHIELD_PRODUCTION_MODE=true -e SHIELD_AUTH_MODE=disabled ghosting-shield:staging 2>&1)
+          AUTH_DIS_EXIT=$?
+          set -e
+
+          echo "Container exit status: $AUTH_DIS_EXIT"
+          echo "Container output:"
+          echo "$AUTH_DIS_OUTPUT"
+
+          if [ $AUTH_DIS_EXIT -eq 0 ]; then
+            echo "SECURITY FAILURE: Production mode accepted disabled authentication (exited 0)!"
+            exit 1
+          fi
+
+          EXPECTED_MSG="Refusing to start: SHIELD_PRODUCTION_MODE requires SHIELD_AUTH_MODE=api_key."
+          if ! echo "$AUTH_DIS_OUTPUT" | grep -Fq "$EXPECTED_MSG"; then
+            echo "SECURITY FAILURE: Container failed, but did not produce expected rejection message!"
+            echo "Expected: $EXPECTED_MSG"
+            exit 1
+          fi
+          echo "PASS: Production mode correctly refused auth_mode=disabled with exit code $AUTH_DIS_EXIT and expected message."
+
+      - name: Production Auth Gate 2 - Refuse Open Auth
+        run: |
+          echo "Testing production startup with SHIELD_AUTH_MODE=open (must refuse)..."
+          set +e
+          AUTH_OPEN_OUTPUT=$(docker run --rm -e SHIELD_PRODUCTION_MODE=true -e SHIELD_AUTH_MODE=open ghosting-shield:staging 2>&1)
+          AUTH_OPEN_EXIT=$?
+          set -e
+
+          echo "Container exit status: $AUTH_OPEN_EXIT"
+          echo "Container output:"
+          echo "$AUTH_OPEN_OUTPUT"
+
+          if [ $AUTH_OPEN_EXIT -eq 0 ]; then
+            echo "SECURITY FAILURE: Production mode accepted unauthenticated open mode (exited 0)!"
+            exit 1
+          fi
+
+          EXPECTED_MSG="Refusing to start: SHIELD_PRODUCTION_MODE refuses unauthenticated SHIELD_AUTH_MODE=open."
+          if ! echo "$AUTH_OPEN_OUTPUT" | grep -Fq "$EXPECTED_MSG"; then
+            echo "SECURITY FAILURE: Container failed, but did not produce expected rejection message!"
+            echo "Expected: $EXPECTED_MSG"
+            exit 1
+          fi
+          echo "PASS: Production mode correctly refused auth_mode=open with exit code $AUTH_OPEN_EXIT and expected message."
+
+      - name: Production Auth Gate 3 - Refuse Missing API Key Digests
+        run: |
+          echo "Testing production startup with auth_mode=api_key and empty digests (must refuse)..."
+          set +e
+          DIGEST_OUTPUT=$(docker run --rm -e SHIELD_PRODUCTION_MODE=true -e SHIELD_AUTH_MODE=api_key -e SHIELD_API_KEY_SHA256="" ghosting-shield:staging 2>&1)
+          DIGEST_EXIT=$?
+          set -e
+
+          echo "Container exit status: $DIGEST_EXIT"
+          echo "Container output:"
+          echo "$DIGEST_OUTPUT"
+
+          if [ $DIGEST_EXIT -eq 0 ]; then
+            echo "SECURITY FAILURE: Production mode accepted empty API key digests (exited 0)!"
+            exit 1
+          fi
+
+          EXPECTED_MSG="Refusing to start: no API key digests are configured."
+          if ! echo "$DIGEST_OUTPUT" | grep -Fq "$EXPECTED_MSG"; then
+            echo "SECURITY FAILURE: Container failed, but did not produce expected rejection message!"
+            echo "Expected: $EXPECTED_MSG"
+            exit 1
+          fi
+          echo "PASS: Production mode correctly refused startup with empty digests with exit code $DIGEST_EXIT and expected message."
+
+      - name: Runtime Test - Development Mode with Open Auth
+        run: |
+          echo "Ensuring no stale test container exists..."
+          docker rm -f shield-dev-test 2>/dev/null || true
+
+          echo "Starting container in development mode (auth_mode=open)..."
+          docker run -d \
+            --name shield-dev-test \
+            -p 127.0.0.1:8080:8080 \
+            -e SHIELD_PRODUCTION_MODE=false \
+            -e SHIELD_AUTH_MODE=open \
+            ghosting-shield:staging
+
+          echo "Waiting for health check..."
+          HEALTHY=0
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8080/health > /dev/null 2>&1; then
+              echo "Health check responded successfully after ${i}s."
+              HEALTHY=1
+              break
+            fi
+            sleep 1
+          done
+
+          if [ $HEALTHY -ne 1 ]; then
+            echo "ERROR: Development container failed to respond to health check after 30s."
+            exit 1
+          fi
+
+          echo "Verifying health payload..."
+          HEALTH_JSON=$(curl -sf http://127.0.0.1:8080/health)
+          echo "$HEALTH_JSON" | python3 -m json.tool
+          echo "$HEALTH_JSON" | grep -q '"status": "ok"' || (echo "Health check status was not ok!" && exit 1)
+          echo "$HEALTH_JSON" | grep -q '"auth_mode": "open"' || (echo "Auth mode was not open!" && exit 1)
+
+          echo "Stopping development test container..."
+          docker stop shield-dev-test
+          docker rm shield-dev-test
+          echo "PASS: Development mode started, served health check, and stopped cleanly."
+
+      - name: Runtime Test - Production Mode with Valid API Key
+        run: |
+          echo "Ensuring no stale test container exists..."
+          docker rm -f shield-prod-test 2>/dev/null || true
+
+          echo "Generating ephemeral test key and SHA-256 digest..."
+          TEST_KEY="test-staging-token-42"
+          TEST_DIGEST=$(printf "%s" "$TEST_KEY" | sha256sum | awk '{print $1}')
+
+          echo "Starting container in production mode..."
+          docker run -d \
+            --name shield-prod-test \
+            -p 127.0.0.1:8080:8080 \
+            -e SHIELD_PRODUCTION_MODE=true \
+            -e SHIELD_AUTH_MODE=api_key \
+            -e SHIELD_API_KEY_SHA256="$TEST_DIGEST" \
+            -e SHIELD_CORS_ORIGINS="https://staging.ghosting.site" \
+            ghosting-shield:staging
+
+          echo "Waiting for health check..."
+          HEALTHY=0
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8080/health > /dev/null 2>&1; then
+              echo "Production container is healthy after ${i}s."
+              HEALTHY=1
+              break
+            fi
+            sleep 1
+          done
+
+          if [ $HEALTHY -ne 1 ]; then
+            echo "ERROR: Production container failed to respond to health check after 30s."
+            exit 1
+          fi
+
+          # 1. Health check (unauthenticated public endpoint, returns 200)
+          echo "--- Checking /health payload ---"
+          HEALTH_RES=$(curl -sf http://127.0.0.1:8080/health)
+          echo "$HEALTH_RES" | python3 -m json.tool
+          echo "$HEALTH_RES" | grep -q '"status": "ok"' || (echo "Health check status was not ok!" && exit 1)
+          echo "$HEALTH_RES" | grep -q '"auth_mode": "api_key"' || (echo "Health auth_mode was not api_key!" && exit 1)
+          echo "$HEALTH_RES" | grep -q '"production_mode": true' || (echo "Health production_mode was not true!" && exit 1)
+          echo "PASS: /health confirms auth_mode=api_key and production_mode=true."
+
+          # 2. Public /capabilities discovery endpoint
+          echo "--- Checking /capabilities payload ---"
+          CAPS_RES=$(curl -sf http://127.0.0.1:8080/capabilities)
+          echo "$CAPS_RES" | python3 -m json.tool
+          echo "$CAPS_RES" | grep -q '"auth_mode": "api_key"' || (echo "Capabilities auth_mode was not api_key!" && exit 1)
+          echo "$CAPS_RES" | grep -q '"access_key_required": true' || (echo "Capabilities access_key_required was not true!" && exit 1)
+          echo "$CAPS_RES" | grep -q '"access_key_header": "X-API-Key"' || (echo "Capabilities access_key_header was not X-API-Key!" && exit 1)
+          echo "PASS: /capabilities exposes access_key_required=true and X-API-Key header requirement."
+
+          # 3. Protected endpoint verification: POST /engines/style_shield/jobs
+          # Verified in app/api/routes_engines.py line 133: dependencies=PROTECTED [require_auth, enforce_rate_limit]
+          echo "--- Checking protected route: POST /engines/style_shield/jobs without key ---"
+          HTTP_CODE_NO_KEY=$(curl -s -o /tmp/resp_no_key.json -w "%{http_code}" -X POST http://127.0.0.1:8080/engines/style_shield/jobs)
+          echo "HTTP status: $HTTP_CODE_NO_KEY"
+          cat /tmp/resp_no_key.json
+          echo ""
+          if [ "$HTTP_CODE_NO_KEY" != "401" ]; then
+            echo "SECURITY FAILURE: Expected HTTP 401 without API key, got $HTTP_CODE_NO_KEY!"
+            exit 1
+          fi
+          grep -q '"error": "auth_required"' /tmp/resp_no_key.json || (echo "Missing expected error code auth_required!" && exit 1)
+          echo "PASS: Missing API key was rejected with HTTP 401 and code 'auth_required'."
+
+          # 4. Protected endpoint with invalid key
+          echo "--- Checking protected route: POST /engines/style_shield/jobs with invalid key ---"
+          HTTP_CODE_BAD_KEY=$(curl -s -o /tmp/resp_bad_key.json -w "%{http_code}" -H "X-API-Key: invalid-key" -X POST http://127.0.0.1:8080/engines/style_shield/jobs)
+          echo "HTTP status: $HTTP_CODE_BAD_KEY"
+          cat /tmp/resp_bad_key.json
+          echo ""
+          if [ "$HTTP_CODE_BAD_KEY" != "401" ]; then
+            echo "SECURITY FAILURE: Expected HTTP 401 with wrong key, got $HTTP_CODE_BAD_KEY!"
+            exit 1
+          fi
+          grep -q '"error": "auth_required"' /tmp/resp_bad_key.json || (echo "Missing expected error code auth_required!" && exit 1)
+          echo "PASS: Invalid API key was rejected with HTTP 401 and code 'auth_required'."
+
+          # 5. Protected endpoint with valid key
+          echo "--- Checking protected route with valid API key ---"
+          # Calling POST /engines/style_shield/jobs with valid X-API-Key advances past require_auth to parameter validation.
+          # Because no file was provided in this probe, FastAPI parameter validation returns HTTP 422 ('invalid_request').
+          # This confirms that authentication succeeded (not 401).
+          HTTP_CODE_VALID=$(curl -s -o /tmp/resp_valid.json -w "%{http_code}" -H "X-API-Key: $TEST_KEY" -X POST http://127.0.0.1:8080/engines/style_shield/jobs)
+          echo "HTTP status: $HTTP_CODE_VALID"
+          cat /tmp/resp_valid.json
+          echo ""
+          if [ "$HTTP_CODE_VALID" != "422" ]; then
+            echo "SECURITY FAILURE: Expected HTTP 422 (auth passed, parameter validation reached), got $HTTP_CODE_VALID!"
+            exit 1
+          fi
+          grep -q '"error": "invalid_request"' /tmp/resp_valid.json || (echo "Missing expected error code invalid_request!" && exit 1)
+          echo "PASS: Valid API key successfully passed authentication and reached route parameter validation (HTTP 422)."
+
+          # Also check read-protected route GET /jobs/{job_id} (dependencies=PROTECTED_READ)
+          # With valid key, passes authentication and reaches JobManager (returning HTTP 404 job_not_found)
+          HTTP_CODE_JOB=$(curl -s -o /tmp/resp_job.json -w "%{http_code}" -H "X-API-Key: $TEST_KEY" http://127.0.0.1:8080/jobs/0123456789012345678901234567890123456789012)
+          echo "GET /jobs/id with valid key returned HTTP $HTTP_CODE_JOB"
+          cat /tmp/resp_job.json
+          echo ""
+          if [ "$HTTP_CODE_JOB" != "404" ]; then
+            echo "SECURITY FAILURE: Expected HTTP 404 (auth passed, job not found), got $HTTP_CODE_JOB!"
+            exit 1
+          fi
+          grep -q '"error": "job_not_found"' /tmp/resp_job.json || (echo "Missing expected error code job_not_found!" && exit 1)
+          echo "PASS: Valid API key authenticated on PROTECTED_READ route (HTTP 404 job_not_found)."
+
+          echo "Stopping production test container..."
+          docker stop shield-prod-test
+          docker rm shield-prod-test
+          echo "PASS: Production container ran and verified successfully."
+
+      - name: Set up Python for Backend Test Suite
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run Backend Offline Unit Tests
+        run: |
+          echo "Installing test dependencies on Ubuntu runner..."
+          sudo apt-get update && sudo apt-get install -y ffmpeg libgl1
+          python -m pip install --upgrade pip
+          pip install -r shield-backend/requirements-dev.txt -r shield-backend/requirements-ml.txt -r shield-backend/requirements-video.txt
+          echo "Executing backend offline test suite (excluding model-dependent weights tests)..."
+          cd shield-backend && pytest -q -m "not model"
+          echo "PASS: All offline backend tests executed and passed."
+
+      - name: Dump Container Logs on Failure
+        if: failure()
+        run: |
+          echo "=== DUMPING TEST LOGS (DEVELOPMENT CONTAINER) ==="
+          docker logs shield-dev-test 2>&1 || true
+          echo "=== DUMPING TEST LOGS (PRODUCTION CONTAINER) ==="
+          docker logs shield-prod-test 2>&1 || true
+
+      - name: Cleanup Test Containers
+        if: always()
+        run: |
+          docker stop shield-dev-test shield-prod-test 2>/dev/null || true
+          docker rm -f shield-dev-test shield-prod-test 2>/dev/null || true
