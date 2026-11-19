@@ -22,20 +22,11 @@ from app.api.routes_video import router as video_router
 from app.config.settings import get_settings
 from app.core.errors import ShieldError
 from app.core.jobs import JobManager
-from app.core.security import reset_limiter
+from app.core.security import check_production_settings, reset_limiter
 
 log = logging.getLogger("ghosting_shield")
 
-
-def _check_production(settings) -> None:
-    if settings.production_mode and settings.auth_mode == "disabled":
-        raise RuntimeError("Refusing to start: SHIELD_PRODUCTION_MODE requires SHIELD_AUTH_MODE=api_key.")
-    if settings.production_mode and settings.auth_mode == "api_key" and not settings.api_key_digests:
-        raise RuntimeError("Refusing to start: no API key digests are configured.")
-    if settings.production_mode and settings.auth_mode == "open":
-        log.warning("Running in production with auth_mode=open: abuse control relies on rate limits and your gateway.")
-    if settings.auth_mode == "disabled":
-        log.warning("Authentication is DISABLED (development mode). Do not expose this service publicly.")
+_check_production = check_production_settings
 
 
 @asynccontextmanager

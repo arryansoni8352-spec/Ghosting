@@ -94,6 +94,29 @@ def reset_limiter() -> None:
     _read_limiter = None
 
 
+def check_production_settings(settings) -> None:
+    """Validate that production mode has safe security settings.
+
+    Production deployments MUST enforce api_key authentication with at least one configured digest.
+    Refuses disabled and open authentication modes to prevent unauthenticated access in production.
+    """
+    if settings.production_mode and settings.auth_mode == "disabled":
+        raise RuntimeError("Refusing to start: SHIELD_PRODUCTION_MODE requires SHIELD_AUTH_MODE=api_key.")
+    if settings.production_mode and settings.auth_mode == "open":
+        raise RuntimeError(
+            "Refusing to start: SHIELD_PRODUCTION_MODE refuses unauthenticated SHIELD_AUTH_MODE=open. "
+            "Production deployments must use SHIELD_AUTH_MODE=api_key."
+        )
+    if settings.production_mode and settings.auth_mode == "api_key" and not settings.api_key_digests:
+        raise RuntimeError("Refusing to start: no API key digests are configured.")
+    if settings.auth_mode == "disabled":
+        import logging
+        logging.getLogger("ghosting_shield").warning("Authentication is DISABLED (development mode). Do not expose this service publicly.")
+    elif settings.auth_mode == "open":
+        import logging
+        logging.getLogger("ghosting_shield").warning("Authentication is OPEN (development mode). Do not expose this service publicly.")
+
+
 def require_auth(request: Request) -> None:
     settings = get_settings()
     if settings.auth_mode in ("disabled", "open"):
