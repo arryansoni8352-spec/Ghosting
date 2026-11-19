@@ -191,10 +191,9 @@ jobs:
           fi
 
           echo "Verifying health payload..."
-          HEALTH_JSON=$(curl -sf http://127.0.0.1:8080/health)
-          echo "$HEALTH_JSON" | python3 -m json.tool
-          echo "$HEALTH_JSON" | grep -q '"status": "ok"' || (echo "Health check status was not ok!" && exit 1)
-          echo "$HEALTH_JSON" | grep -q '"auth_mode": "open"' || (echo "Auth mode was not open!" && exit 1)
+          curl -sf http://127.0.0.1:8080/health -o /tmp/health_dev.json
+          python3 -m json.tool /tmp/health_dev.json
+          python3 -c "import json; d=json.load(open('/tmp/health_dev.json')); assert d.get('status')=='ok', f'Unexpected status: {d.get(\"status\")}'; s=d.get('security',{}); assert s.get('auth_mode')=='open', f'Unexpected auth_mode: {s.get(\"auth_mode\")}'; assert s.get('production_mode') is False, f'Unexpected production_mode: {s.get(\"production_mode\")}'; print('PASS: Development health payload verified (status=ok, auth_mode=open, production_mode=False)')"
 
           echo "Stopping development test container..."
           docker stop shield-dev-test
@@ -238,21 +237,15 @@ jobs:
 
           # 1. Health check (unauthenticated public endpoint, returns 200)
           echo "--- Checking /health payload ---"
-          HEALTH_RES=$(curl -sf http://127.0.0.1:8080/health)
-          echo "$HEALTH_RES" | python3 -m json.tool
-          echo "$HEALTH_RES" | grep -q '"status": "ok"' || (echo "Health check status was not ok!" && exit 1)
-          echo "$HEALTH_RES" | grep -q '"auth_mode": "api_key"' || (echo "Health auth_mode was not api_key!" && exit 1)
-          echo "$HEALTH_RES" | grep -q '"production_mode": true' || (echo "Health production_mode was not true!" && exit 1)
-          echo "PASS: /health confirms auth_mode=api_key and production_mode=true."
+          curl -sf http://127.0.0.1:8080/health -o /tmp/health_prod.json
+          python3 -m json.tool /tmp/health_prod.json
+          python3 -c "import json; d=json.load(open('/tmp/health_prod.json')); assert d.get('status')=='ok', f'Unexpected status: {d.get(\"status\")}'; s=d.get('security',{}); assert s.get('auth_mode')=='api_key', f'Unexpected auth_mode: {s.get(\"auth_mode\")}'; assert s.get('production_mode') is True, f'Unexpected production_mode: {s.get(\"production_mode\")}'; print('PASS: Production health payload verified (status=ok, auth_mode=api_key, production_mode=True)')"
 
           # 2. Public /capabilities discovery endpoint
           echo "--- Checking /capabilities payload ---"
-          CAPS_RES=$(curl -sf http://127.0.0.1:8080/capabilities)
-          echo "$CAPS_RES" | python3 -m json.tool
-          echo "$CAPS_RES" | grep -q '"auth_mode": "api_key"' || (echo "Capabilities auth_mode was not api_key!" && exit 1)
-          echo "$CAPS_RES" | grep -q '"access_key_required": true' || (echo "Capabilities access_key_required was not true!" && exit 1)
-          echo "$CAPS_RES" | grep -q '"access_key_header": "X-API-Key"' || (echo "Capabilities access_key_header was not X-API-Key!" && exit 1)
-          echo "PASS: /capabilities exposes access_key_required=true and X-API-Key header requirement."
+          curl -sf http://127.0.0.1:8080/capabilities -o /tmp/caps.json
+          python3 -m json.tool /tmp/caps.json
+          python3 -c "import json; d=json.load(open('/tmp/caps.json')); a=d.get('access',{}); assert a.get('auth_mode')=='api_key', f'Unexpected auth_mode: {a.get(\"auth_mode\")}'; assert a.get('access_key_required') is True, f'Unexpected access_key_required: {a.get(\"access_key_required\")}'; assert a.get('access_key_header')=='X-API-Key', f'Unexpected access_key_header: {a.get(\"access_key_header\")}'; print('PASS: Capabilities payload verified (auth_mode=api_key, access_key_required=True, access_key_header=X-API-Key)')"
 
           # 3. Protected endpoint verification: POST /engines/style_shield/jobs
           # Verified in app/api/routes_engines.py line 133: dependencies=PROTECTED [require_auth, enforce_rate_limit]
@@ -265,7 +258,7 @@ jobs:
             echo "SECURITY FAILURE: Expected HTTP 401 without API key, got $HTTP_CODE_NO_KEY!"
             exit 1
           fi
-          grep -q '"error": "auth_required"' /tmp/resp_no_key.json || (echo "Missing expected error code auth_required!" && exit 1)
+          python3 -c "import json; d=json.load(open('/tmp/resp_no_key.json')); assert d.get('error')=='auth_required', f'Unexpected error code: {d.get(\"error\")}'; print('PASS: Missing API key response confirmed error code auth_required.')"
           echo "PASS: Missing API key was rejected with HTTP 401 and code 'auth_required'."
 
           # 4. Protected endpoint with invalid key
@@ -278,7 +271,7 @@ jobs:
             echo "SECURITY FAILURE: Expected HTTP 401 with wrong key, got $HTTP_CODE_BAD_KEY!"
             exit 1
           fi
-          grep -q '"error": "auth_required"' /tmp/resp_bad_key.json || (echo "Missing expected error code auth_required!" && exit 1)
+          python3 -c "import json; d=json.load(open('/tmp/resp_bad_key.json')); assert d.get('error')=='auth_required', f'Unexpected error code: {d.get(\"error\")}'; print('PASS: Invalid API key response confirmed error code auth_required.')"
           echo "PASS: Invalid API key was rejected with HTTP 401 and code 'auth_required'."
 
           # 5. Protected endpoint with valid key
@@ -294,7 +287,7 @@ jobs:
             echo "SECURITY FAILURE: Expected HTTP 422 (auth passed, parameter validation reached), got $HTTP_CODE_VALID!"
             exit 1
           fi
-          grep -q '"error": "invalid_request"' /tmp/resp_valid.json || (echo "Missing expected error code invalid_request!" && exit 1)
+          python3 -c "import json; d=json.load(open('/tmp/resp_valid.json')); assert d.get('error')=='invalid_request', f'Unexpected error code: {d.get(\"error\")}'; print('PASS: Valid API key response confirmed error code invalid_request.')"
           echo "PASS: Valid API key successfully passed authentication and reached route parameter validation (HTTP 422)."
 
           # Also check read-protected route GET /jobs/{job_id} (dependencies=PROTECTED_READ)
@@ -307,7 +300,7 @@ jobs:
             echo "SECURITY FAILURE: Expected HTTP 404 (auth passed, job not found), got $HTTP_CODE_JOB!"
             exit 1
           fi
-          grep -q '"error": "job_not_found"' /tmp/resp_job.json || (echo "Missing expected error code job_not_found!" && exit 1)
+          python3 -c "import json; d=json.load(open('/tmp/resp_job.json')); assert d.get('error')=='job_not_found', f'Unexpected error code: {d.get(\"error\")}'; print('PASS: Valid API key job lookup confirmed error code job_not_found.')"
           echo "PASS: Valid API key authenticated on PROTECTED_READ route (HTTP 404 job_not_found)."
 
           echo "Stopping production test container..."
